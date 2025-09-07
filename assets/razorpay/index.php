@@ -26,7 +26,9 @@ $amount = $_SESSION['registration']['amount'] ?? 0;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: #f8f9fa;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../images/bgimg.jpg);
+ background-size: cover;
+background-position: center;
         }
         .card {
             border-radius: 12px;

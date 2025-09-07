@@ -70,6 +70,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="apple-touch-icon" href="images/favicon.png">
 </head>
+<Style>
+body{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(images/bgimg.jpg);
+ background-size: cover;
+background-position: center;
+}
+.container{
+    color: white;
+}
+    </style>
 <body>
 
 <!-- Navbar -->
