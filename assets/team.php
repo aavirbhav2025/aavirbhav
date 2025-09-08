@@ -37,10 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Calculate amount
-    $__selCount = is_array($events) ? count($events) : 0;
-if ($type !== "team" && $__selCount > 2) { $type = "team"; }
-if ($type === "team") {
+    if ($type === "team") {
         $amount = 1600;
+        if (in_array("Treasure Hunt", $events)) { $amount += 800; }
+        if (in_array("Corporate Walk", $events)) { $amount += 1000; }
     } else {
         $amount = 0;
         foreach ($events as $event) {
@@ -84,46 +84,6 @@ background-position: center;
     </style>
 <body>
 
-<style>
-.toast-popup {
-    position: fixed;
-    z-index: 9999;
-    background: #323232;
-    color: white;
-    padding: 12px 18px;
-    border-radius: 8px;
-    font-size: 14px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    opacity: 0;
-    transform: translateX(100%);
-    transition: transform 0.5s ease, opacity 0.5s ease;
-    max-width: 250px;
-    word-wrap: break-word;
-}
-.toast-popup.show {
-    opacity: 1;
-    transform: translateX(0);
-}
-@media (max-width: 600px) {
-    .toast-popup {
-        bottom: 20px;
-        right: 50%;
-        transform: translateX(50%) translateY(100%);
-    }
-    .toast-popup.show {
-        transform: translateX(50%) translateY(0);
-    }
-}
-@media (min-width: 601px) {
-    .toast-popup {
-        top: 20px;
-        right: 20px;
-    }
-}
-</style>
-<div id="toastContainer"></div>
-
-
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
@@ -161,7 +121,7 @@ background-position: center;
                 <div class="form-check">
                     <input class="form-check-input event-checkbox" type="checkbox" name="events[]" value="<?php echo htmlspecialchars($event); ?>" data-price="<?php echo $price; ?>" id="<?php echo md5($event); ?>">
                     <label class="form-check-label" for="<?php echo md5($event); ?>">
-                        <?php if(isset($_POST["type"]) && $_POST["type"] === "team") { echo htmlspecialchars($event); } else { echo htmlspecialchars($event) . " (₹" . $price . ")"; } ?>
+                        <?php echo htmlspecialchars($event) . " (₹" . $price . ")"; ?>
                     </label>
                 </div>
             <?php endforeach; ?>
@@ -179,332 +139,100 @@ background-position: center;
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".event-checkbox");
+    const participantFields = document.getElementById("participantFields");
+    const regType = document.getElementById("regType");
+    const totalPriceEl = document.getElementById("totalPrice");
 
-    function showToast(message) {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = 'toast-popup';
-        toast.textContent = message;
-        container.appendChild(toast);
-        // Force reflow to trigger animation
-        void toast.offsetWidth;
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 500);
-        }, 4000);
-    }
+    function updateParticipantsAndPrice() {
+        participantFields.innerHTML = "";
+        let selectedCount = 0;
+        let totalPrice = 0;
 
-    const typeInputs = document.querySelectorAll('input[name="type"], select[name="type"]');
-    const totalPriceEl = document.getElementById('totalPrice');
-    let lastTotal = 0;
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                selectedCount++;
+                const eventName = cb.value;
+                const eventPrice = parseInt(cb.getAttribute("data-price")) || 0;
+                totalPrice += eventPrice;
 
-    function animateTotal(newTotal) {
-        const duration = 400;
-        const startTime = performance.now();
-        const startValue = lastTotal;
-        const diff = newTotal - startValue;
-
-        function step(currentTime) {
-            const progress = Math.min((currentTime - startTime) / duration, 1);
-            const value = Math.floor(startValue + diff * progress);
-            if (totalPriceEl) totalPriceEl.textContent = value;
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            } else {
-                lastTotal = newTotal;
-            }
-        }
-        requestAnimationFrame(step);
-    }
-
-    function setType(value) {
-        // Handle radio inputs
-        const radios = document.querySelectorAll('input[name="type"]');
-        let set = false;
-        radios.forEach(r => {
-            if (r.value === value) {
-                r.checked = true;
-                set = true;
-            } else if (value === 'team') {
-                r.checked = (r.value === 'team');
-            }
-        });
-        // Handle select input
-        const select = document.querySelector('select[name="type"]');
-        if (select) {
-            select.value = value;
-            set = true;
-        }
-        return set;
-    }
-
-    function reorderEventsForTeamMode() {
-        const eventCheckboxes = document.querySelectorAll('.event-checkbox');
-        if (!eventCheckboxes.length) return;
-
-        const specialEvents = [];
-        const normalEvents = [];
-
-        eventCheckboxes.forEach(cb => {
-            const formCheck = cb.closest('.form-check');
-            const label = formCheck.querySelector('.form-check-label');
-            const name = (label.textContent || '').replace(/\(₹.*?\)/, '').trim().toLowerCase();
-            if (name === 'tug of war' || name === 'corporate walk') {
-                specialEvents.push(formCheck);
-            } else {
-                normalEvents.push(formCheck);
+                participantFields.innerHTML += `
+                    <div class="border rounded p-3 mb-3">
+                        <h5>${eventName} - Participants</h5>
+                        <div class="row g-2">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control"
+                                    placeholder="Name 1"
+                                    name="participant_name[${eventName}][]"
+                                    pattern="[A-Za-z\\s]{3,}"
+                                    title="At least 3 letters, alphabets only" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="tel" class="form-control"
+                                    placeholder="Number 1"
+                                    name="participant_contact[${eventName}][]"
+                                    pattern="\\d{10}"
+                                    title="Enter 10 digit number" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control"
+                                    placeholder="Name 2"
+                                    name="participant_name[${eventName}][]"
+                                    pattern="[A-Za-z\\s]{3,}"
+                                    title="At least 3 letters, alphabets only" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="tel" class="form-control"
+                                    placeholder="Number 2"
+                                    name="participant_contact[${eventName}][]"
+                                    pattern="\\d{10}"
+                                    title="Enter 10 digit number" required>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
         });
 
-        // Build container safely
-        const container = eventCheckboxes[0].closest('div').parentElement;
-        // Clear container
-        container.innerHTML = '';
-
-        if (specialEvents.length) {
-            const heading = document.createElement('h6');
-            heading.textContent = 'Special Events (Extra Charges)';
-            heading.style.marginTop = '10px';
-            heading.style.fontWeight = 'bold';
-            container.appendChild(heading);
-            specialEvents.forEach(el => container.appendChild(el));
+        // Auto-switch to team if more than 2 events in individual mode
+        if (regType.value === "individual" && selectedCount > 2) {
+            regType.value = "team";
         }
 
-        if (normalEvents.length) {
-            const heading = document.createElement('h6');
-            heading.textContent = 'Other Events (Included in Base Fee)';
-            heading.style.marginTop = '10px';
-            heading.style.fontWeight = 'bold';
-            container.appendChild(heading);
-            normalEvents.forEach(el => container.appendChild(el));
+        // If team, price is fixed
+        if (regType.value === "team") {
+            totalPrice = 1600;
         }
+
+        if (regType.value === "team") { document.querySelector(".mt-3 h5").style.display = "none"; } else { document.querySelector(".mt-3 h5").style.display = "block"; totalPriceEl.textContent = totalPrice; // Always show total price }
     }
 
-    function updateLabelsAndTotal() {
-        const typeEl = document.querySelector('input[name="type"]:checked') || document.querySelector('select[name="type"]');
-        const selectedType = typeEl ? (typeEl.value || 'individual') : 'individual';
-
-        const eventCheckboxes = document.querySelectorAll('.event-checkbox');
-        let total = 0;
-
-        // Auto-switch to team if > 2 events selected in individual mode
-        const selectedCount = Array.from(document.querySelectorAll('.event-checkbox:checked')).length;
-        if (selectedType !== 'team' && selectedCount > 2) {
-            showToast("You selected more than 2 events, so we switched you to Team pricing.");
-    
-            setType('team');
-            // Re-run with team selected
-            updateLabelsAndTotal();
-            return;
-        }
-
-        if (selectedType === 'team') {
-            total = 1600; // Base for team
-            reorderEventsForTeamMode();
-        }
-
-        eventCheckboxes.forEach(cb => {
-            const formCheck = cb.closest('.form-check');
-            const label = formCheck.querySelector('.form-check-label');
-            const price = parseInt(cb.dataset.price || 0);
-            const eventName = (label.textContent || '').replace(/\(₹.*?\)/, '').trim();
-            const lowerName = eventName.toLowerCase();
-
-            if (selectedType === 'team') {
-                if (lowerName === 'tug of war' || lowerName === 'corporate walk') {
-                    label.textContent = eventName + " (₹" + price + ")";
-                    if (cb.checked) total += price;
-                } else {
-                    label.textContent = eventName;
-                }
-            } else { // individual
-                label.textContent = eventName + " (₹" + price + ")";
-                if (cb.checked) total += price;
-            }
-        });
-
-        animateTotal(total);
-    }
-
-    typeInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            location.reload();
-        });
-    });
-    document.querySelectorAll('.event-checkbox').forEach(cb => {
-        cb.addEventListener('change', updateLabelsAndTotal);
+    checkboxes.forEach(cb => {
+        cb.addEventListener("change", updateParticipantsAndPrice);
     });
 
-    // Initial run
-    updateLabelsAndTotal();
+    regType.addEventListener("change", updateParticipantsAndPrice);
 });
-</script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-
-    function showToast(message) {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = 'toast-popup';
-        toast.textContent = message;
-        container.appendChild(toast);
-        // Force reflow to trigger animation
-        void toast.offsetWidth;
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 500);
-        }, 4000);
-    }
-
-    const typeInputs = document.querySelectorAll('input[name="type"], select[name="type"]');
-    const totalPriceEl = document.getElementById('totalPrice');
-    let lastTotal = 0;
-
-    function animateTotal(newTotal) {
-        const duration = 400;
-        const startTime = performance.now();
-        const startValue = lastTotal;
-        const diff = newTotal - startValue;
-
-        function step(currentTime) {
-            const progress = Math.min((currentTime - startTime) / duration, 1);
-            const value = Math.floor(startValue + diff * progress);
-            if (totalPriceEl) totalPriceEl.textContent = value;
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            } else {
-                lastTotal = newTotal;
-            }
-        }
-        requestAnimationFrame(step);
-    }
-
-    function setType(value) {
-        // Handle radio inputs
-        const radios = document.querySelectorAll('input[name="type"]');
-        let set = false;
-        radios.forEach(r => {
-            if (r.value === value) {
-                r.checked = true;
-                set = true;
-            } else if (value === 'team') {
-                r.checked = (r.value === 'team');
+    document.getElementById("eventForm").addEventListener("submit", function(e) {
+        let valid = true;
+        document.querySelectorAll("input[name='participant_name[]']").forEach(input => {
+            if (!input.value.trim()) {
+                valid = false;
             }
         });
-        // Handle select input
-        const select = document.querySelector('select[name="type"]');
-        if (select) {
-            select.value = value;
-            set = true;
-        }
-        return set;
-    }
-
-    function reorderEventsForTeamMode() {
-        const eventCheckboxes = document.querySelectorAll('.event-checkbox');
-        if (!eventCheckboxes.length) return;
-
-        const specialEvents = [];
-        const normalEvents = [];
-
-        eventCheckboxes.forEach(cb => {
-            const formCheck = cb.closest('.form-check');
-            const label = formCheck.querySelector('.form-check-label');
-            const name = (label.textContent || '').replace(/\(₹.*?\)/, '').trim().toLowerCase();
-            if (name === 'tug of war' || name === 'corporate walk') {
-                specialEvents.push(formCheck);
-            } else {
-                normalEvents.push(formCheck);
+        document.querySelectorAll("input[name='participant_contact[]']").forEach(input => {
+            if (!input.value.trim()) {
+                valid = false;
             }
         });
-
-        // Build container safely
-        const container = eventCheckboxes[0].closest('div').parentElement;
-        // Clear container
-        container.innerHTML = '';
-
-        if (specialEvents.length) {
-            const heading = document.createElement('h6');
-            heading.textContent = 'Special Events (Extra Charges)';
-            heading.style.marginTop = '10px';
-            heading.style.fontWeight = 'bold';
-            container.appendChild(heading);
-            specialEvents.forEach(el => container.appendChild(el));
+        if (!valid) {
+            e.preventDefault();
+            alert("Please fill in all participant names and contact numbers before submitting.");
         }
-
-        if (normalEvents.length) {
-            const heading = document.createElement('h6');
-            heading.textContent = 'Other Events (Included in Base Fee)';
-            heading.style.marginTop = '10px';
-            heading.style.fontWeight = 'bold';
-            container.appendChild(heading);
-            normalEvents.forEach(el => container.appendChild(el));
-        }
-    }
-
-    function updateLabelsAndTotal() {
-        const typeEl = document.querySelector('input[name="type"]:checked') || document.querySelector('select[name="type"]');
-        const selectedType = typeEl ? (typeEl.value || 'individual') : 'individual';
-
-        const eventCheckboxes = document.querySelectorAll('.event-checkbox');
-        let total = 0;
-
-        // Auto-switch to team if > 2 events selected in individual mode
-        const selectedCount = Array.from(document.querySelectorAll('.event-checkbox:checked')).length;
-        if (selectedType !== 'team' && selectedCount > 2) {
-            showToast("You selected more than 2 events, so we switched you to Team pricing.");
-    
-            setType('team');
-            // Re-run with team selected
-            updateLabelsAndTotal();
-            return;
-        }
-
-        if (selectedType === 'team') {
-            total = 1600; // Base for team
-            reorderEventsForTeamMode();
-        }
-
-        eventCheckboxes.forEach(cb => {
-            const formCheck = cb.closest('.form-check');
-            const label = formCheck.querySelector('.form-check-label');
-            const price = parseInt(cb.dataset.price || 0);
-            const eventName = (label.textContent || '').replace(/\(₹.*?\)/, '').trim();
-            const lowerName = eventName.toLowerCase();
-
-            if (selectedType === 'team') {
-                if (lowerName === 'tug of war' || lowerName === 'corporate walk') {
-                    label.textContent = eventName + " (₹" + price + ")";
-                    if (cb.checked) total += price;
-                } else {
-                    label.textContent = eventName;
-                }
-            } else { // individual
-                label.textContent = eventName + " (₹" + price + ")";
-                if (cb.checked) total += price;
-            }
-        });
-
-        animateTotal(total);
-    }
-
-    typeInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            location.reload();
-        });
-    });
-    document.querySelectorAll('.event-checkbox').forEach(cb => {
-        cb.addEventListener('change', updateLabelsAndTotal);
     });
 
-    // Initial run
-    updateLabelsAndTotal();
-});
 </script>
-
 </body>
 </html>
