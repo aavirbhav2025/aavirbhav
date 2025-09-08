@@ -3,7 +3,8 @@
   "description": "Minimal Razorpay integration in PHP (Orders + Checkout + Verification + Webhook)",
   "type": "project",
   "require": {
-    "razorpay/razorpay": "^2.9"
+    "razorpay/razorpay": "^2.9",
+    "rmccue/requests": "^2.0"
   },
   "minimum-stability": "stable",
   "license": "MIT"
