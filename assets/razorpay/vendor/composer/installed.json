@@ -26,7 +26,7 @@
             },
             "time": "2025-08-05T07:13:20+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "Deprecated.php"
@@ -106,7 +106,7 @@
             },
             "time": "2025-01-21T10:13:31+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "library/Deprecated.php"
