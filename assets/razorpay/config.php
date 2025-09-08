@@ -11,4 +11,4 @@ define('WEBHOOK_SECRET', 'set_a_random_long_string_here');
 
 // Composer autoload for Razorpay PHP SDK
 //   composer require razorpay/razorpay:^2
-require __DIR__ . '/vendor/autoload.php';
+require _DIR_ . '/vendor/autoload.php';
