@@ -65,7 +65,7 @@ background-position: center;
         <p><strong>Name:</strong> <?php echo htmlspecialchars($userName); ?></p>
         <p><strong>Contact:</strong> <?php echo htmlspecialchars($userContact); ?></p>
         <p><strong>Email:</strong> <?php echo htmlspecialchars($userEmail); ?></p>
-        <p><strong>Amount:</strong> ₹<?php echo number_format($amount, 2); ?></p>
+        <p><strong>Amount:</strong> ₹<?php echo number_format($amount); ?></p>
 
         <button id="payButton" class="btn btn-primary mt-3">Pay Now</button>
     </div>
