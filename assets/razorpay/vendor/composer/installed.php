@@ -3,7 +3,7 @@
         'name' => 'example/razorpay-php-starter',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'e20d1718eb3c55dbcff2d486dc17e078df32e0d1',
+        'reference' => '6d536f51db49f341be60855cca3a286984e19cc2',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'example/razorpay-php-starter' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'e20d1718eb3c55dbcff2d486dc17e078df32e0d1',
+            'reference' => '6d536f51db49f341be60855cca3a286984e19cc2',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
