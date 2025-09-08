@@ -342,3 +342,28 @@ background-position: center;
 .open{
   width: px
 }
+
+/* Event Cards - consistent desktop alignment */
+.grid.md\:grid-cols-4.lg\:grid-cols-4 {
+  align-items: stretch; /* make all cards same height */
+}
+
+.card-hover {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-hover img {
+  height: 250px;         /* uniform image height */
+  object-fit: cover;     /* keep proportions, crop overflow */
+  width: 100%;
+}
+
+.card-hover .p-6 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
