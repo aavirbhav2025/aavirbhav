@@ -356,7 +356,7 @@ background-position: center;
 
 .card-hover img {
   height: 250px;         /* uniform image height */
-  object-fit:fill;     /* keep proportions, crop overflow */
+  object-fit:cover;     /* keep proportions, crop overflow */
   width: 100%;
 }
 

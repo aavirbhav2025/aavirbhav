@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'example/razorpay-php-starter',
+        'name' => 'aavirbhav/razorpay-integration',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'bf171c8fba18a1ea37b088820e33864f31edaaa3',
+        'reference' => 'c48b87e389eb8e046bfb66cac5738bd17cf20453',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'example/razorpay-php-starter' => array(
+        'aavirbhav/razorpay-integration' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'bf171c8fba18a1ea37b088820e33864f31edaaa3',
+            'reference' => 'c48b87e389eb8e046bfb66cac5738bd17cf20453',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
