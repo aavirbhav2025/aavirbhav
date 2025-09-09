@@ -11,16 +11,14 @@ if (!isset($_SESSION['username'])) {
 $eventPrices = [
     "Tug of War" => 800,
     "Corporate Walk" => 1000,
-    "Singing" => 500,
-    "Dancing" => 700,
-    "Drama" => 600,
-    "Painting" => 400,
-    "Quiz" => 300,
-    "Debate" => 350,
-    "Photography" => 450,
-    "Cooking" => 550,
-    "Coding Challenge" => 900,
-    "Startup Pitch" => 1200
+    "Web Design" => 100,
+    "It Manager" => 100,
+    "IT Quiz" => 100,
+    "Treasure Hunt" => 100,
+    "Coding" => 100,
+    "Photography" => 100,
+    "Videography" => 100,
+    "Gaming" => 100
 ];
 $defaultPrice = 100;
 
