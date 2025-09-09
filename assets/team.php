@@ -26,19 +26,24 @@ $defaultPrice = 100;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $type = $_POST['type'] ?? 'individual';
     $events = $_POST['events'] ?? [];
-    $names = $_POST['participant_name'] ?? [];
-    $contacts = $_POST['participant_contact'] ?? [];
+    $participants = $_POST['participants'] ?? [];
 
-    // Auto-upgrade to team if more than 2 events in individual mode
-    if ($type === "individual" && count($events) > 2) {
+    // Detect IT events selected
+    $itEventsSelected = array_intersect($events, [
+        "Web Design", "It Manager", "IT Quiz", "Treasure Hunt",
+        "Coding", "Photography", "Videography", "Gaming"
+    ]);
+
+    // Force team type if more than 2 IT events
+    if (count($itEventsSelected) > 2) {
         $type = "team";
     }
 
     // Calculate amount
     if ($type === "team") {
         $amount = 1600;
-        if (in_array("Treasure Hunt", $events)) { $amount += 800; }
-        if (in_array("Corporate Walk", $events)) { $amount += 1000; }
+        if (in_array("Tug of War", $events)) { $amount += $eventPrices["Tug of War"]; }
+        if (in_array("Corporate Walk", $events)) { $amount += $eventPrices["Corporate Walk"]; }
     } else {
         $amount = 0;
         foreach ($events as $event) {
@@ -50,8 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $_SESSION['registration'] = [
         'type' => $type,
         'events' => $events,
-        'names' => $names,
-        'contacts' => $contacts,
+        'participants' => $participants,
         'amount' => $amount
     ];
 
@@ -63,174 +67,185 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Team Registration</title>
+    <title>Team Registration - Aavirbhav Events</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="icon" type="image/png" href="images/favicon.png">
-  <link rel="apple-touch-icon" href="images/favicon.png">
-</head>
-<Style>
-body{
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(images/bgimg.jpg);
- background-size: cover;
-background-position: center;
-}
-.container{
-    color: white;
-}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:%23764ba2;stop-opacity:1" /></linearGradient></defs><rect width="1000" height="600" fill="url(%23bg)"/></svg>');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+        }
+        input[type="checkbox"].custom-checkbox { display: none; }
+        .event-card {
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem; border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.75rem; background-color: rgba(255, 255, 255, 0.05);
+            cursor: pointer; transition: all 0.2s ease-in-out; min-height: 80px;
+            text-align: center; font-weight: 500;
+        }
+        input[type="checkbox"].custom-checkbox:checked + .event-card {
+            border-color: #3b82f6; background-color: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+        }
     </style>
-<body>
+</head>
+<body class="text-white">
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="#">Aavirbhav - Events</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
-      <ul class="navbar-nav align-items-center">
-        <li class="nav-item me-3 text-white">
-          Hello, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>
-        </li>
-        <li class="nav-item">
-          <a href="forms/logout.php" class="btn btn-outline-light btn-sm">Logout</a>
-        </li>
-      </ul>
+<nav class="bg-gray-900 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <div class="text-xl font-bold text-white">Aavirbhav - Events</div>
+            <div class="flex items-center space-x-4">
+                <span class="text-gray-300">Hello, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong></span>
+                <a href="logout.php" class="bg-transparent border border-gray-400 text-gray-300 px-4 py-2 rounded hover:bg-gray-700">Logout</a>
+            </div>
+        </div>
     </div>
-  </div>
 </nav>
 
-<div class="container mt-4">
-    <h2 class="mb-4">Register Your Team</h2>
-    <form method="POST" id="eventForm" novalidate>
-        <div class="mb-3">
-            <label class="form-label">Registration Type</label>
-            <select class="form-select" name="type" id="regType" required>
-                <option value="individual">Individual</option>
-                <option value="team">Team</option>
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold mb-6">Register Your Team</h2>
+
+    <form id="eventForm" method="POST" action="" class="space-y-6">
+        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+            <label class="block text-lg font-medium mb-3">Registration Type</label>
+            <select id="regType" name="type" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white">
+                <option value="individual" class="text-gray-800">Individual</option>
+                <option value="team" class="text-gray-800">Team</option>
             </select>
         </div>
+        <p class="text-yellow-300 mb-4 text-sm">
+    Note: If you select more than 2 IT events, your registration will automatically be considered as a <strong>Team</strong>.
+    The team pricing (₹1600 base + open event charges) will be applied.
+</p>
 
-        <div class="mb-3">
-            <label class="form-label">Select Events</label>
-            <?php foreach ($eventPrices as $event => $price): ?>
-                <div class="form-check">
-                    <input class="form-check-input event-checkbox" type="checkbox" name="events[]" value="<?php echo htmlspecialchars($event); ?>" data-price="<?php echo $price; ?>" id="<?php echo md5($event); ?>">
-                    <label class="form-check-label" for="<?php echo md5($event); ?>">
-                        <?php echo htmlspecialchars($event) . " (₹" . $price . ")"; ?>
-                    </label>
-                </div>
-            <?php endforeach; ?>
+        <!-- IT Events -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+            <label class="block text-lg font-medium mb-4">IT Events</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <?php
+                foreach (["Web Design","It Manager","IT Quiz","Treasure Hunt","Coding","Photography","Videography","Gaming"] as $ev) {
+                    echo '<label>
+                        <input type="checkbox" name="events[]" value="'.$ev.'" data-price="'.$eventPrices[$ev].'" class="event-checkbox it-event custom-checkbox">
+                        <div class="event-card">'.$ev.' (₹'.$eventPrices[$ev].')</div>
+                    </label>';
+                }
+                ?>
+            </div>
         </div>
 
-        <div id="participantFields"></div>
-
-        <div class="mt-3">
-            <h5>Total Price: ₹<span id="totalPrice">0</span></h5>
+        <!-- Open Events -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+            <label class="block text-lg font-medium mb-4">Open Events</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label>
+                    <input type="checkbox" name="events[]" value="Tug of War" data-price="800" class="event-checkbox open-event custom-checkbox">
+                    <div class="event-card">Tug of War (₹800)</div>
+                </label>
+                <label>
+                    <input type="checkbox" name="events[]" value="Corporate Walk" data-price="1000" class="event-checkbox open-event custom-checkbox">
+                    <div class="event-card">Corporate Walk (₹1000)</div>
+                </label>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary mt-3">Proceed to Payment</button>
-    </form>
+        <div id="participantFields" class="space-y-4"></div>
+
+        <!-- Total Price -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+            <h3 class="text-2xl font-bold">Total Price: ₹<span id="totalPrice">0</span></h3>
+        </div>
+
+        <!-- Reminder Note -->
+        <p class="text-yellow-300 text-sm">
+            Reminder: Selecting more than 2 IT events automatically switches your registration to <strong>Team</strong> and applies team pricing.
+        </p>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg">
+            Proceed to Payment
+        </button>
+</form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const checkboxes = document.querySelectorAll(".event-checkbox");
     const participantFields = document.getElementById("participantFields");
     const regType = document.getElementById("regType");
     const totalPriceEl = document.getElementById("totalPrice");
+    const itCheckboxes = document.querySelectorAll(".it-event");
+    const openCheckboxes = document.querySelectorAll(".open-event");
+
+    function participantInput(eventName, i) {
+        let safeName = eventName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+        return `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label><strong>Participant ${i}</strong><br>Name *</label>
+                    <input type="text" name="participants[${safeName}][${i}][name]" required class="w-full p-2 rounded bg-white/20 border border-white/30 text-white">
+                </div>
+                <div>
+                    <label><br>Phone *</label>
+                    <input type="tel" name="participants[${safeName}][${i}][phone]" required class="w-full p-2 rounded bg-white/20 border border-white/30 text-white">
+                </div>
+            </div>`;
+    }
+
+    function wrapEvent(name, inputs, typeText) {
+        return `<div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">${name} - Participants</h3>
+                    <p class="text-gray-300 mb-4">${typeText}</p>
+                    ${inputs}
+                </div>`;
+    }
 
     function updateParticipantsAndPrice() {
         participantFields.innerHTML = "";
-        let selectedCount = 0;
         let totalPrice = 0;
 
-        checkboxes.forEach(cb => {
-            if (cb.checked) {
-                selectedCount++;
-                const eventName = cb.value;
-                const eventPrice = parseInt(cb.getAttribute("data-price")) || 0;
-                totalPrice += eventPrice;
+        const itSelected = Array.from(itCheckboxes).filter(cb => cb.checked);
+        const openSelected = Array.from(openCheckboxes).filter(cb => cb.checked);
 
-                participantFields.innerHTML += `
-                    <div class="border rounded p-3 mb-3">
-                        <h5>${eventName} - Participants</h5>
-                        <div class="row g-2">
-                            <div class="col-md-3">
-                                <input type="text" class="form-control"
-                                    placeholder="Name 1"
-                                    name="participant_name[${eventName}][]"
-                                    pattern="[A-Za-z\\s]{3,}"
-                                    title="At least 3 letters, alphabets only" required>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="tel" class="form-control"
-                                    placeholder="Number 1"
-                                    name="participant_contact[${eventName}][]"
-                                    pattern="\\d{10}"
-                                    title="Enter 10 digit number" required>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control"
-                                    placeholder="Name 2"
-                                    name="participant_name[${eventName}][]"
-                                    pattern="[A-Za-z\\s]{3,}"
-                                    title="At least 3 letters, alphabets only" required>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="tel" class="form-control"
-                                    placeholder="Number 2"
-                                    name="participant_contact[${eventName}][]"
-                                    pattern="\\d{10}"
-                                    title="Enter 10 digit number" required>
-                            </div>
-                        </div>
-                    </div>
-                `;
+        // Force team if more than 2 IT events
+        let isTeam = regType.value === "team" || itSelected.length > 2;
+
+        if (isTeam) {
+            totalPrice += 1600;
+            if (openSelected.some(cb => cb.value === "Tug of War")) totalPrice += 800;
+            if (openSelected.some(cb => cb.value === "Corporate Walk")) totalPrice += 1000;
+        } else {
+            itSelected.forEach(cb => totalPrice += parseInt(cb.dataset.price) || 0);
+            openSelected.forEach(cb => totalPrice += parseInt(cb.dataset.price) || 0);
+        }
+
+        // Always show 2 participant fields for every selected event
+        [...itSelected, ...openSelected].forEach(cb => {
+            let inputs = "";
+            for (let i = 1; i <= 2; i++) { 
+                inputs += participantInput(cb.value, i);
             }
+            participantFields.innerHTML += wrapEvent(
+                cb.value,
+                inputs,
+                isTeam || cb.classList.contains("open-event") 
+                    ? "Team registration (2 members)" 
+                    : "Individual registration (2 members)"
+            );
         });
 
-        // Auto-switch to team if more than 2 events in individual mode
-        if (regType.value === "individual" && selectedCount > 2) {
-            regType.value = "team";
-        }
-
-        // If team, price is fixed
-        if (regType.value === "team") {
-            totalPrice = 1600;
-        }
-
-        if (regType.value === "team") { document.querySelector(".mt-3 h5").style.display = "none"; } else { document.querySelector(".mt-3 h5").style.display = "block"; totalPriceEl.textContent = totalPrice; // Always show total price }
+        totalPriceEl.textContent = totalPrice;
     }
 
-    checkboxes.forEach(cb => {
-        cb.addEventListener("change", updateParticipantsAndPrice);
+    document.querySelectorAll(".event-checkbox, #regType").forEach(el => {
+        el.addEventListener("change", updateParticipantsAndPrice);
     });
 
-    regType.addEventListener("change", updateParticipantsAndPrice);
+    updateParticipantsAndPrice();
 });
-
-    document.getElementById("eventForm").addEventListener("submit", function(e) {
-        let valid = true;
-        document.querySelectorAll("input[name='participant_name[]']").forEach(input => {
-            if (!input.value.trim()) {
-                valid = false;
-            }
-        });
-        document.querySelectorAll("input[name='participant_contact[]']").forEach(input => {
-            if (!input.value.trim()) {
-                valid = false;
-            }
-        });
-        if (!valid) {
-            e.preventDefault();
-            alert("Please fill in all participant names and contact numbers before submitting.");
-        }
-    });
-
 </script>
+
 </body>
 </html>

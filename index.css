@@ -1,50 +1,49 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fugaz+One&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Metal Mania", system-ui;
-
 }
-.main3,.spe
-{
+
+.main3,.spe {
    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(assets/images/bgimg.jpg);
- background-size: cover;
-background-position: center;
+   background-size: cover;
+   background-position: center;
 }
 
-.main2
-{
+.main2 {
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(assets/images/background1.jpg);
- background-size: cover;
-background-position: center;
+  background-size: cover;
+  background-position: center;
 }
 
-.evt{
+.evt {
   width: 70%;
   margin-left: 80px;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
     display: none;
 }
 
 body {
-   
     color: #ffffff;
     overflow-x: hidden;
-    
 }
 
-.py-20{
+.py-20 {
     background-color: #000000;
 }
-.logo1{
+
+.logo1 {
     background-color: #000000;
 }
-.logo{
+
+.logo {
   object: contain;
   width:100vh;
   height:auto;
@@ -67,23 +66,22 @@ body {
   letter-spacing: 5px;
 }
 
-.abt1,.events,.committee,.staff,.sponser,.loc,.txt{
+.abt1,.events,.committee,.staff,.sponser,.loc,.txt {
   font-family: "Metal Mania", system-ui;
   letter-spacing: 5px;
 }
 
-.abt{
+.abt {
   font-family: "Metal Mania", system-ui;
   letter-spacing: 2px;
 }
 
-.main3{
+.main3 {
   letter-spacing: 2px !important;
 }
 
 .gradient-text1::before,
-.gradient-text1::after 
-{
+.gradient-text1::after {
   content: attr(data-text);
   position: absolute;
   top: 0;
@@ -94,8 +92,7 @@ body {
   clip: rect(0, 0, 0, 0);
 }
 
-.gradient-text1::before 
-{
+.gradient-text1::before {
   left: 2px;
   text-shadow: -2px 0 red;
   animation: glitchTop 1s infinite linear alternate-reverse;
@@ -129,40 +126,46 @@ body {
   100% { clip: rect(0, 9999px, 0, 0); }
 }
 
-
 .hero-gradient {
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 50%, rgba(236, 72, 153, 0.1) 100%);
 }
 
-/* Ensure event card has consistent height */
+/* =========================
+   EVENT SECTION ALIGNMENT FIX
+   ========================= */
+#events .grid,
+#events1 .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
 .card-hover {
   display: flex;
   flex-direction: column;
-  height: 100%; /* all cards same height */
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  border-radius: 1rem;
+  overflow: hidden;
+  width: 100%;
 }
 
-/* Fix event card image height */
 .card-hover img {
-  height: 350px;
-  object-fit: fill;
-
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
 }
 
-/* Content section fills remaining space */
 .card-hover .p-6 {
-  flex: 1; /* take all space */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* push button to bottom */
-  text-align: center; /* center headings + text */
+  justify-content: space-between;
+  text-align: center;
 }
 
-/* Titles & subtitles aligned */
 .card-hover h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: #ffffff;
+  min-height: 2.5rem;
 }
 
 .card-hover h6 {
@@ -170,15 +173,21 @@ body {
   font-weight: 400;
   color: #cbd5e1;
   margin-bottom: 1rem;
-  min-height: 2.5rem; /* reserve space so all align */
+  min-height: 2.5rem;
 }
 
-/* Button stays at bottom */
 .card-hover button {
   align-self: center;
   margin-top: auto;
 }
 
+@media (max-width: 768px) {
+  .card-hover img {
+    height: 300px;
+  }
+}
+
+/* ========================= */
 
 .speaker-card {
     position: relative;
@@ -231,28 +240,25 @@ body {
     .event-timeline > div {
         padding-left: 2rem;
     }
-.main3,.spe
-{
-   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(assets/images/bgimg.jpg);
- background-size: cover;
-background-position: center;
-}
-
-.main2{
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(assets/images/background1.jpg);
- background-size: cover;
-}
-
-.evt{
-  width: 100%;
-  margin-left: 0px;
-}
-.abt{
-  text-align: justify;
-}
-.psmall{
-  font-size: 20px !important;
-}
+    .main3,.spe {
+       background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(assets/images/bgimg.jpg);
+       background-size: cover;
+       background-position: center;
+    }
+    .main2 {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(assets/images/background1.jpg);
+      background-size: cover;
+    }
+    .evt {
+      width: 100%;
+      margin-left: 0px;
+    }
+    .abt {
+      text-align: justify;
+    }
+    .psmall {
+      font-size: 20px !important;
+    }
 }
 
 .sponsor-logo {
@@ -280,7 +286,6 @@ background-position: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Mobile countdown numbers */
 @media (max-width: 780px) {
   .countdown-number {
     min-width: 60px;
@@ -300,73 +305,3 @@ background-position: center;
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
-<<<<<<< HEAD
-=======
-/* Ensure uniform alignment inside event cards */
-.card-hover .p-6 {
-  text-align: center; /* Centers headings, subtext, and button */
-}
-
-.card-hover h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-}
-
-.card-hover h6 {
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: #cbd5e1; /* softer gray for subtitle */
-  margin-bottom: 1rem;
-}
-
-.card-hover button {
-  display: inline-block;
-  margin-top: 0.5rem;
-}
-
-/* Open Events - center two cards */
-.open-events-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;             /* space between cards */
-  flex-wrap: wrap;       /* stack on small screens */
-}
-
-.open-events-wrapper .card-hover {
-  width: 320px;          /* fixed card width */
-  flex-shrink: 0;
-}
-
-.open{
-  width: px
-}
-
-/* Event Cards - consistent desktop alignment */
-.grid.md\:grid-cols-4.lg\:grid-cols-4 {
-  align-items: stretch; /* make all cards same height */
-}
-
-.card-hover {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.card-hover img {
-  height: 250px;         /* uniform image height */
-  object-fit:cover;     /* keep proportions, crop overflow */
-  width: 100%;
-}
-
-.card-hover .p-6 {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: center;
-}
->>>>>>> d82c3292d5c786c1fb9877cab497aaadc0b30424

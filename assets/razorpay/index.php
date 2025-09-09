@@ -7,32 +7,49 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-require 'config.php'; // assuming you have Razorpay config here
-
 // Fetch values from session
-$userName = $_SESSION['username'] ?? '';
+$userName    = $_SESSION['username'] ?? '';
 $userContact = $_SESSION['phone'] ?? '';
-$userEmail = $_SESSION['email'] ?? '';
-$amount = $_SESSION['registration']['amount'] ?? 0;
+$userEmail   = $_SESSION['email'] ?? '';
+$amount      = $_SESSION['registration']['amount'] ?? 0;
+
+// Map amounts (in rupees) to QR codes
+$qrImages = [
+    100  => "100.jpg",
+    200  => "200.jpg",
+    1600 => "1600.jpg",
+    2400 => "qr_2400.png",
+    2500 => "qr_2500.png",
+    2600 => "qr_2600.png",
+    3400 => "qr_3400.png"
+];
+
+// Pick correct QR code or default
+$qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Aavirbhav Event Payment</title>
-    <link rel="icon" type="image/png" href="../images/favicon.png">
-  <link rel="apple-touch-icon" href="../images/favicon.png">
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../images/bgimg.jpg);
- background-size: cover;
-background-position: center;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../assets/images/bgimg.jpg);
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
         }
         .card {
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .qr-image {
+            max-width: 300px;
+            border: 3px solid white;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -42,10 +59,7 @@ background-position: center;
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="#">Aavirbhav</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+    <div class="collapse navbar-collapse justify-content-end">
       <ul class="navbar-nav align-items-center">
         <li class="nav-item me-3 text-white">
           Hello, <strong><?php echo htmlspecialchars($userName); ?></strong>
@@ -60,70 +74,39 @@ background-position: center;
 
 <!-- Main Content -->
 <div class="container mt-5">
-    <div class="card p-4">
+    <div class="card p-4 text-center">
         <h3 class="mb-3">Confirm Your Details</h3>
         <p><strong>Name:</strong> <?php echo htmlspecialchars($userName); ?></p>
         <p><strong>Contact:</strong> <?php echo htmlspecialchars($userContact); ?></p>
         <p><strong>Email:</strong> <?php echo htmlspecialchars($userEmail); ?></p>
         <p><strong>Amount:</strong> ₹<?php echo number_format($amount); ?></p>
 
-        <button id="payButton" class="btn btn-primary mt-3">Pay Now</button>
+        <!-- QR Image -->
+        <div class="my-4">
+            <img src="/aavirbhav/assets/images/<?php echo htmlspecialchars($qrImage); ?>" 
+                alt="Payment QR" 
+                class="qr-image">
+            <p class="mt-2 text-warning">Scan this QR code to complete your payment.</p>
+        </div>
+
+        <!-- Payment Confirmation Form -->
+        <form action="verify.php" method="post" enctype="multipart/form-data" class="text-start">
+            <div class="mb-3">
+                  <label class="form-label">Registrant Email *</label>
+                  <input type="email" name="Registrant Email" class="form-control" placeholder="Enter Email" required>
+              </div>
+            <div class="mb-3">
+                <label class="form-label">Transaction/UTR ID *</label>
+                <input type="text" name="transaction_id" class="form-control" placeholder="Enter UPI/Bank Transaction ID" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Upload Payment Screenshot *</label>
+                <input type="file" name="payment_screenshot" class="form-control" accept="image/*" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100">I Have Paid</button>
+        </form>
     </div>
 </div>
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-document.getElementById('payButton').onclick = function(e) {
-    fetch('create_order.php', { method: 'POST' })
-    .then(response => response.json())
-    .then(order => {
-        const options = {
-            key: "<?php echo RAZORPAY_KEY_ID; ?>",
-            amount: order.amount, // in paise
-            currency: order.currency,
-            name: "Aavirbhav Payment",
-            image: "../images/aavirbhav.jpg",
-            description: "Payment for Registered Events",
-            order_id: order.id,
-            prefill: {
-                name: <?php echo json_encode($userName); ?>,
-                contact: <?php echo json_encode($userContact); ?>,
-                email: <?php echo json_encode($userEmail); ?>
-            },
-            theme: {
-                color: "#3399cc"
-            },
-            handler: function (response) {
-    // Redirect to verify.php with payment details
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = 'verify.php';
-
-    const fields = {
-        razorpay_payment_id: response.razorpay_payment_id,
-        razorpay_order_id: response.razorpay_order_id,
-        razorpay_signature: response.razorpay_signature
-    };
-
-    for (const key in fields) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = fields[key];
-        form.appendChild(input);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-}
-
-        };
-        const rzp = new Razorpay(options);
-        rzp.open();
-        e.preventDefault();
-    });
-};
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
