@@ -18,10 +18,10 @@ $qrImages = [
     100  => "100.jpg",
     200  => "200.jpg",
     1600 => "1600.jpg",
-    2400 => " ",
-    2500 => " ",
-    2600 => " ",
-    3400 => " "
+    2400 => "2400.jpg",
+    2500 => "2500.jpg",
+    2600 => "2600.jpg",
+    3400 => "3400.jpg"
 ];
 
 // Pick correct QR code or default
@@ -32,12 +32,12 @@ $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
 <head>
     <meta charset="UTF-8">
     <title>Aavirbhav Event Payment</title>
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../assets/images/bgimg.jpg);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(/assets/images/bgimg.jpg);
             background-size: cover;
             background-position: center;
             min-height: 100vh;
@@ -83,7 +83,7 @@ $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
 
         <!-- QR Image -->
         <div class="my-4">
-            <img src="/aavirbhav/assets/images/<?php echo htmlspecialchars($qrImage); ?>" 
+            <img src="/assets/images/<?php echo htmlspecialchars($qrImage); ?>" 
                 alt="Payment QR" 
                 class="qr-image">
             <p class="mt-2 text-warning">Scan this QR code to complete your payment.</p>
@@ -92,9 +92,9 @@ $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
         <!-- Payment Confirmation Form -->
         <form action="verify.php" method="post" enctype="multipart/form-data" class="text-start">
             <div class="mb-3">
-                  <label class="form-label">Registrant Email *</label>
-                  <input type="email" name="Registrant Email" class="form-control" placeholder="Enter Email" required>
-              </div>
+                <label class="form-label">Registrant Email *</label>
+                <input type="email" name="registrant_email" class="form-control" placeholder="Enter Email" required>
+            </div>
             <div class="mb-3">
                 <label class="form-label">Transaction/UTR ID *</label>
                 <input type="text" name="transaction_id" class="form-control" placeholder="Enter UPI/Bank Transaction ID" required>
