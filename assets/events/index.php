@@ -125,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- QR Image -->
         <div class="my-4">
             <img src="<?php echo $qrSrc; ?>"
-                 alt="Payment QR"
+                 alt="payment UPI ID harikiranap123@okaxis"
                  class="qr-image"
                  onerror="this.onerror=null;this.src='/aavirbhav/assets/images/qr_default.png';">
         </div>
