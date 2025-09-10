@@ -76,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <title>Team Registration - Aavirbhav Events</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -177,11 +178,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!--<p class="text-yellow-300 text-sm">
             Reminder: Selecting more than 2 IT events automatically switches your registration to <strong>Team</strong> and applies team pricing.
         </p>-->
-
-        <!-- Submit Button -->
+         <!-- Submit Button -->
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg">
             Proceed to Payment
         </button>
+        <div align="center">      
+        <p class="mb-2"><strong>Any Technical issue? Please contact:</strong></p>
+        <p><a style="color:green; background-color:white; padding:3px;" href="https://wa.me/7012048118" target="_blank"
+        class="text-success text-decoration-none fw-bold">
+        <i class="fab fa-whatsapp"></i>
+        <strong> Chat on WhatsApp  </strong></a><br>or call: 
+        <strong>+91 7012048118</strong></p>
+        </div>
+       
     </form>
 </div>
 
