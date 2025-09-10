@@ -129,9 +129,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                  class="qr-image"
                  onerror="this.onerror=null;this.src='/aavirbhav/assets/images/qr_default.png';">
         </div>
-            <p class="mb-2"><strong>Any Technical issue? Please contact:</strong></p>
-            <p><a href="https://wa.me/7012048118" target="_blank"class="text-success text-decoration-none fw-bold"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a><br>or call: <strong>+91 7012048118</strong></p>
-
+        <div align="center">      
+        <p class="mb-2"><strong>Any Technical issue? Please contact:</strong></p>
+        <p><a style="color:green; background-color:white; padding:3px;" href="https://wa.me/7012048118" target="_blank"
+        class="text-success text-decoration-none fw-bold">
+        <i class="fab fa-whatsapp"></i>
+        <strong> Chat on WhatsApp  </strong></a><br>or call: 
+        <strong>+91 7012048118</strong></p>
+        </div>
         <!-- Payment Confirmation Form -->
         <form method="post" enctype="multipart/form-data" class="text-start">
             <div class="mb-3">
