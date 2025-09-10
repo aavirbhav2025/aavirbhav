@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
             <label class="block text-lg font-medium mb-3">Registration Type</label>
             <select id="regType" name="type" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white">
-                <option value="individual" class="text-gray-800">Individual</option>
+                <!--<option value="individual" class="text-gray-800">Individual</option>-->
                 <option value="team" class="text-gray-800">Team</option>
             </select>
         </div>
