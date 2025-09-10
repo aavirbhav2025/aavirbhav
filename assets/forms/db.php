@@ -6,7 +6,9 @@ if ($_SERVER['HTTP_HOST'] === 'localhost') {
     $username   = "root"; // default in XAMPP
     $password   = "";     // default password is empty
     $dbname     = "aavirbhav"; // your local database
-} else {
+
+} else
+ {
     // Live server credentials
     $servername = "localhost";
     $username   = "u223469901_aavirbhav";

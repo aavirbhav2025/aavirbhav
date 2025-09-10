@@ -127,6 +127,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                  class="qr-image"
                  onerror="this.onerror=null;this.src='/aavirbhav/assets/images/qr_default.png';">
         </div>
+        <p class="mb-4"><strong>Any Technical issue Plese contact. +917012048118</strong></p>
+        
+
 
         <!-- Payment Confirmation Form -->
         <form method="post" enctype="multipart/form-data" class="text-start">

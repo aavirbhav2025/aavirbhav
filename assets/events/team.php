@@ -120,12 +120,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
             <label class="block text-lg font-medium mb-3">Registration Type</label>
             <select id="regType" name="type" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white">
+
                 <!--<option value="individual" class="text-gray-800">Individual</option>-->
+                
                 <option value="team" class="text-gray-800">Team</option>
             </select>
         </div>
-        <p class="text-yellow-300 mb-4 text-sm">
+       <!-- <p class="text-yellow-300 mb-4 text-sm">
             Note: If you select more than 2 IT events, your registration will automatically be considered as a <strong>Team</strong>.
+            The team pricing (₹1600 base + open event charges) will be applied.
+        </p>-->
+
+        <p class="text-yellow-300 mb-4 text-sm">
+            Note: For now only <strong>Team</strong> events are available for registration.         
             The team pricing (₹1600 base + open event charges) will be applied.
         </p>
 
@@ -167,9 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
 
         <!-- Reminder Note -->
-        <p class="text-yellow-300 text-sm">
+        <!--<p class="text-yellow-300 text-sm">
             Reminder: Selecting more than 2 IT events automatically switches your registration to <strong>Team</strong> and applies team pricing.
-        </p>
+        </p>-->
 
         <!-- Submit Button -->
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg">
