@@ -1,48 +1,42 @@
 <?php
 session_start();
-require '../../forms/db.php';
+require '../forms/db.php';
 
-if (!isset($_SESSION['last_payment_id'])) {
-    header("Location: index.php");
+// Redirect if not logged in
+if (!isset($_SESSION['username'])) {
+    header("Location: form.html");
     exit();
 }
+$user_email = ($_SESSION['email']); // remove spaces
 
-$payment_id = $_SESSION['last_payment_id'];
-
-// Fetch payment details
-$payment_sql = "SELECT * FROM payments WHERE payment_id = ?";
-$stmt = $conn->prepare($payment_sql);
-$stmt->bind_param("s", $payment_id);
-$stmt->execute();
-$payment_result = $stmt->get_result();
-$payment = $payment_result->fetch_assoc();
-$stmt->close();
-
-// Fetch registration details
-$reg_sql = "SELECT * FROM registrations WHERE payment_id = ?";
+$reg_sql = "SELECT * FROM registrations WHERE email = ? ORDER BY id DESC LIMIT 1";
 $stmt = $conn->prepare($reg_sql);
-$stmt->bind_param("s", $payment_id);
+$stmt->bind_param("s", $user_email);
 $stmt->execute();
 $reg_result = $stmt->get_result();
 $registration = $reg_result->fetch_assoc();
 $stmt->close();
 
-// Decode participants JSON
-$participants_data = json_decode($registration['participants_json'], true) ?? [];
+if (!$registration) {
+    die("No registration found for this email: " . htmlspecialchars($user_email));
+}
+
+$events = json_decode($registration['events'], true) ?? [];
+$participants = json_decode($registration['participants'], true) ?? []; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Payment Receipt - Game of Thrones Theme</title>
+    <title>Payment Receipt - Aavirbhav 2025</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" type="image/png" href="../../images/favicon.png">
-  <link rel="apple-touch-icon" href="../../images/favicon.png">
-    
+    <link rel="apple-touch-icon" href="../../images/favicon.png">
+
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Fantasy Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 
@@ -60,10 +54,6 @@ $participants_data = json_decode($registration['participants_json'], true) ?? []
             box-shadow: 0 0 25px gold;
             max-width: 850px;
             margin: auto;
-            background-image: url('assets/iron-throne.png');
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: overlay;
         }
         h2 {
             font-weight: bold;
@@ -104,44 +94,54 @@ $participants_data = json_decode($registration['participants_json'], true) ?? []
         <div class="text-center">
             <img src="../../images/logo.png" alt="Event Logo" class="logo">
             <h2 class="mb-4">Aavirbhav 2025</h2>
-            <h2 class="mb-4">Event Payment Receipt</h2>
+            <h2 class="mb-4">Event Registration Receipt</h2>
         </div>
 
         <p><strong>Name:</strong> <?= htmlspecialchars($registration['name']); ?></p>
-        <p><strong>Contact:</strong> <?= htmlspecialchars($registration['contact']); ?></p>
+        <p><strong>Contact:</strong> <?= htmlspecialchars($registration['phone']); ?></p>
         <p><strong>Email:</strong> <?= htmlspecialchars($registration['email']); ?></p>
+        <p><strong>Type:</strong> <?= htmlspecialchars($registration['type']); ?></p>
 
         <hr>
-        <p><strong>Order ID:</strong> <?= htmlspecialchars($payment['order_id']); ?></p>
-        <p><strong>Payment ID:</strong> <?= htmlspecialchars($payment['payment_id']); ?></p>
+        <p><strong>Registration ID:</strong> <?= htmlspecialchars($registration['id']); ?></p>
         <p><strong>Amount Paid:</strong> ₹<?= number_format($registration['amount'], 2); ?></p>
-        <p><strong>Payment Date:</strong> <?= htmlspecialchars($payment['created_at']); ?></p>
+        <p><strong>Registered At:</strong> <?= htmlspecialchars($registration['created_at']); ?></p>
 
         <hr>
-        <h5>Registered Events & Participants:</h5>
+        <h5>Registered Events:</h5>
         <ul>
-            <?php foreach ($participants_data as $event => $people): ?>
-                <li>
-                    <strong><?= htmlspecialchars($event); ?>:</strong>
-                    <ul>
-                        <?php foreach ($people as $person): ?>
-                            <li><?= htmlspecialchars($person['name']); ?> - <?= htmlspecialchars($person['contact']); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </li>
+            <?php foreach ($events as $event): ?>
+                <li><?= htmlspecialchars($event); ?></li>
             <?php endforeach; ?>
         </ul>
+
+        <h5>Participants:</h5>
+        <ul>
+<?php 
+if (!empty($participants)) {
+    // If participants are nested by event (like "Videography" → {1,2,...})
+    foreach ($participants as $event => $members) {
+        foreach ($members as $person) {
+            echo "<li>" 
+                . htmlspecialchars($person['name'] ?? 'No Name') 
+                . " (" . htmlspecialchars($person['phone'] ?? 'No Contact') . ")</li>";
+        }
+    }
+} else {
+    echo "<li>No Name (No Contact)</li>";
+}
+?>
+</ul>
+
 
         <hr>
         <p class="text-center" style="color: gold;">In the Game of Thrones, you win or you pay.</p>
     </div>
 
-        <div class="text-center mt-3">
+    <div class="text-center mt-3">
         <button class="btn btn-gold" id="downloadPDF">Download PDF Receipt</button>
-        <a href="../../forms/logout.php" class="btn btn-danger ms-2">Return to Home</a>
+        <a href="../forms/logout.php" class="btn btn-danger ms-2">Return to Home</a>
     </div>
-</div>
-
 </div>
 
 <!-- PDF Scripts -->
@@ -160,12 +160,9 @@ function generatePDF() {
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save("payment_receipt_<?= $payment_id; ?>.pdf");
+        pdf.save("registration_receipt_<?= $registration['id']; ?>.pdf");
     });
 }
-
-// Auto-download on page load
-window.addEventListener("load", generatePDF);
 
 // Manual download
 document.getElementById('downloadPDF').addEventListener('click', generatePDF);

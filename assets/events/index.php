@@ -1,19 +1,23 @@
 <?php
 session_start();
+require '../forms/db.php';
 
-// Redirect to login if not logged in
 if (!isset($_SESSION['username'])) {
     header("Location: form.html");
     exit();
 }
 
-// Fetch values from session
+
 $userName    = $_SESSION['username'] ?? '';
 $userContact = $_SESSION['phone'] ?? '';
 $userEmail   = $_SESSION['email'] ?? '';
+
+$registration = $_SESSION['registration'];
+$type         = $registration['type'] ?? 'individual';
+$events       = json_encode($registration['events']);        // store as JSON
+$participants = json_encode($registration['participants']);  // store as JSON
 $amount      = $_SESSION['registration']['amount'] ?? 0;
 
-// Map amounts (in rupees) to QR codes
 $qrImages = [
     100  => "100.jpg",
     200  => "200.jpg",
@@ -31,9 +35,38 @@ $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
 // If the site runs at http://localhost/aavirbhav/, use a root-relative URL from that project root:
 $qrSrc = "/aavirbhav/assets/images/" . htmlspecialchars($qrImage);
 
-// Alternatively, if index.php is inside the aavirbhav folder and paths should be document-relative, use this instead:
-// $qrSrc = "assets/images/" . htmlspecialchars($qrImage);
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $sql = "INSERT INTO registrations 
+            (name, email, phone, type, events, participants, amount, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
+
+    $stmt->bind_param("ssssssd", $userName, $userEmail, $userContact, $type, $events, $participants, $amount);
+
+    if ($stmt->execute()) {
+    // Redirect to success.php after insert
+    header("Location: success.php");
+    exit(); // Always call exit() after header redirect
+} else {
+    // Show error if insert fails
+    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+    echo "<pre>";
+    var_dump($userName, $userEmail, $userContact, $type, $events, $participants, $amount);
+    
+}
+    $stmt->close();
+    $conn->close();
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,7 +130,7 @@ $qrSrc = "/aavirbhav/assets/images/" . htmlspecialchars($qrImage);
         </div>
 
         <!-- Payment Confirmation Form -->
-        <form action="verify.php" method="post" enctype="multipart/form-data" class="text-start">
+        <form method="post" enctype="multipart/form-data" class="text-start">
             <div class="mb-3">
                 <label class="form-label">Registrant Email *</label>
                 <input type="email" name="registrant_email" class="form-control" placeholder="Enter Email" required>
