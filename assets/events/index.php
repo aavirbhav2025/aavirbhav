@@ -42,7 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO registrations 
             (name, email, phone, type, events, participants, amount, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
-
     $stmt = $conn->prepare($sql);
 
     if (!$stmt) {

@@ -92,7 +92,7 @@ $participants = json_decode($registration['participants'], true) ?? [];
 <div class="container mt-5">
     <div class="invoice-box" id="receipt">
         <div class="text-center">
-            <img src="../../images/logo.png" alt="Event Logo" class="logo">
+            <img src="../images/logo.png" alt="Event Logo" class="logo">
             <h2 class="mb-4">Aavirbhav 2025</h2>
             <h2 class="mb-4">Event Registration Receipt</h2>
         </div>
