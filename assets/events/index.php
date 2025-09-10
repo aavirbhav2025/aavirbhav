@@ -83,10 +83,11 @@ $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
 
         <!-- QR Image -->
         <div class="my-4">
-            <img src="/assets/images/<?php echo htmlspecialchars($qrImage); ?>" 
-                alt="Payment QR" 
-                class="qr-image">
-            <p class="mt-2 text-warning">Scan this QR code to complete your payment.</p>
+            <img src="/../images/<?php echo htmlspecialchars($qrImage); ?>" alt="Payment QR" class="qr-image">
+
+     alt="Payment QR" 
+     class="qr-image">
+
         </div>
 
         <!-- Payment Confirmation Form -->

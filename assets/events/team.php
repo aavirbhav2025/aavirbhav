@@ -28,6 +28,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $events = $_POST['events'] ?? [];
     $participants = $_POST['participants'] ?? [];
 
+    // Save all form data into session as JSON
+    $_SESSION['team_data'] = json_encode([
+        'inputs' => $_POST,
+        'selected_events' => $events
+    ]);
+
+    // Redirect to index.php
+    header("Location: index.php");
+    exit();
+
+    $type = $_POST['type'] ?? 'individual';
+    $events = $_POST['events'] ?? [];
+    $participants = $_POST['participants'] ?? [];
+
     // Detect IT events selected
     $itEventsSelected = array_intersect($events, [
         "Web Design", "It Manager", "IT Quiz", "Treasure Hunt",
@@ -59,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'amount' => $amount
     ];
 
-    header("Location: razorpay/index.php");
+    header("Location: index.php");
     exit();
 }
 ?>
@@ -182,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function participantInput(eventName, i) {
         let safeName = eventName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
         return `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="grid gri    d-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label><strong>Participant ${i}</strong><br>Name *</label>
                     <input type="text" name="participants[${safeName}][${i}][name]" required class="w-full p-2 rounded bg-white/20 border border-white/30 text-white">
