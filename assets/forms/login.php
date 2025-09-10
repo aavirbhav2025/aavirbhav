@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['clgname'] = $clgname;
             $_SESSION['email'] = $user_email;
 
-            echo "<script>alert('Login Successful'); window.location.href='../team.php';</script>";
+            echo "<script>alert('Login Successful'); window.location.href='../events/team.php';</script>";
             exit();
         } else {
             echo "<script>alert('Invalid Password'); window.location.href='form.html';</script>";
