@@ -28,19 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $events = $_POST['events'] ?? [];
     $participants = $_POST['participants'] ?? [];
 
-    // Save all form data into session as JSON
+    // Save all form data into session as JSON (optional)
     $_SESSION['team_data'] = json_encode([
         'inputs' => $_POST,
         'selected_events' => $events
     ]);
-
-    // Redirect to index.php
-    header("Location: index.php");
-    exit();
-
-    $type = $_POST['type'] ?? 'individual';
-    $events = $_POST['events'] ?? [];
-    $participants = $_POST['participants'] ?? [];
 
     // Detect IT events selected
     $itEventsSelected = array_intersect($events, [
@@ -73,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'amount' => $amount
     ];
 
+    // Redirect AFTER computing and saving session
     header("Location: index.php");
     exit();
 }
@@ -132,9 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </select>
         </div>
         <p class="text-yellow-300 mb-4 text-sm">
-    Note: If you select more than 2 IT events, your registration will automatically be considered as a <strong>Team</strong>.
-    The team pricing (₹1600 base + open event charges) will be applied.
-</p>
+            Note: If you select more than 2 IT events, your registration will automatically be considered as a <strong>Team</strong>.
+            The team pricing (₹1600 base + open event charges) will be applied.
+        </p>
 
         <!-- IT Events -->
         <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
@@ -182,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg">
             Proceed to Payment
         </button>
-</form>
+    </form>
 </div>
 
 <script>
@@ -196,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function participantInput(eventName, i) {
         let safeName = eventName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
         return `
-            <div class="grid gri    d-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label><strong>Participant ${i}</strong><br>Name *</label>
                     <input type="text" name="participants[${safeName}][${i}][name]" required class="w-full p-2 rounded bg-white/20 border border-white/30 text-white">

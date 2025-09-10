@@ -26,18 +26,25 @@ $qrImages = [
 
 // Pick correct QR code or default
 $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
+
+// Build the web URL to the image under XAMPP.
+// If the site runs at http://localhost/aavirbhav/, use a root-relative URL from that project root:
+$qrSrc = "/aavirbhav/assets/images/" . htmlspecialchars($qrImage);
+
+// Alternatively, if index.php is inside the aavirbhav folder and paths should be document-relative, use this instead:
+// $qrSrc = "assets/images/" . htmlspecialchars($qrImage);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Aavirbhav Event Payment</title>
-    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="/aavirbhav/assets/images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(/assets/images/bgimg.jpg);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(/aavirbhav/assets/images/bgimg.jpg);
             background-size: cover;
             background-position: center;
             min-height: 100vh;
@@ -79,15 +86,14 @@ $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
         <p><strong>Name:</strong> <?php echo htmlspecialchars($userName); ?></p>
         <p><strong>Contact:</strong> <?php echo htmlspecialchars($userContact); ?></p>
         <p><strong>Email:</strong> <?php echo htmlspecialchars($userEmail); ?></p>
-        <p><strong>Amount:</strong> ₹<?php echo number_format($amount); ?></p>
+        <p><strong>Amount:</strong> ₹<?php echo number_format((float)$amount); ?></p>
 
         <!-- QR Image -->
         <div class="my-4">
-            <img src="/../images/<?php echo htmlspecialchars($qrImage); ?>" alt="Payment QR" class="qr-image">
-
-     alt="Payment QR" 
-     class="qr-image">
-
+            <img src="<?php echo $qrSrc; ?>"
+                 alt="Payment QR"
+                 class="qr-image"
+                 onerror="this.onerror=null;this.src='/aavirbhav/assets/images/qr_default.png';">
         </div>
 
         <!-- Payment Confirmation Form -->
