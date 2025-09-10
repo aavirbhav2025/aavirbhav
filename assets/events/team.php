@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="text-xl font-bold text-white">Aavirbhav - Events</div>
             <div class="flex items-center space-x-4">
                 <span class="text-gray-300">Hello, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong></span>
-                <a href="logout.php" class="bg-transparent border border-gray-400 text-gray-300 px-4 py-2 rounded hover:bg-gray-700">Logout</a>
+                <a href="../forms/logout.php" class="bg-transparent border border-gray-400 text-gray-300 px-4 py-2 rounded hover:bg-gray-700">Logout</a>
             </div>
         </div>
     </div>

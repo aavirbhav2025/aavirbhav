@@ -33,7 +33,7 @@ $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
 
 // Build the web URL to the image under XAMPP.
 // If the site runs at http://localhost/aavirbhav/, use a root-relative URL from that project root:
-$qrSrc = "/aavirbhav/assets/images/" . htmlspecialchars($qrImage);
+$qrSrc = "../images/" . htmlspecialchars($qrImage);
 
 
 
