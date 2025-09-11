@@ -211,8 +211,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <input type="text" name="participants[${safeName}][${i}][name]" required class="w-full p-2 rounded bg-white/20 border border-white/30 text-white">
                 </div>
                 <div>
-                    <label><br>Phone *</label>
-                    <input type="tel" name="participants[${safeName}][${i}][phone]" required class="w-full p-2 rounded bg-white/20 border border-white/30 text-white">
+                <label><br>Phone *</label>
+                <input type="tel" 
+                        name="participants[${safeName}][${i}][phone]" 
+                        required
+                        pattern="[0-9]{10}" 
+                        maxlength="10"
+                        class="w-full p-2 rounded bg-white/20 border border-white/30 text-white"
+                        placeholder="Enter 10-digit phone number">
                 </div>
             </div>`;
     }
