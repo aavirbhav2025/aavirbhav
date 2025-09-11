@@ -155,18 +155,21 @@ $mail->Body = '
 
         /* Main Card */
         .card {
-            background: rgba(77, 75, 75, 0.5);
-            border: 2px solid #D4AF37;
-            border-radius: 20px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 20px rgba(245, 180, 82, 0.7);
-            animation: fadeInUp 1s ease-in-out;
-            width: 100%;
-            max-width: 420px;
-            padding: 2rem;
-            text-align: center;
-            color: #fff;
-        }
+    background: rgba(77, 75, 75, 0.5);
+    border: 2px solid #D4AF37;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    animation: fadeInUp 1s ease-in-out;
+
+    /* 🔑 Responsive sizing */
+    width: 90%;         /* take most of the screen width */
+    max-width: 420px;   /* but don’t exceed this */
+    padding: 2rem;
+    text-align: center;
+    color: #fff;
+}
+
 
         /* Heading */
         h4 {
@@ -292,27 +295,23 @@ $mail->Body = '
         }
 
         /* Responsive */
-       @media (max-width: 780px) {
-    .card {
-        width: 90% !important;   /* take up most of the screen width */
-        max-width: 400px;        /* but don’t stretch too much */
-    }
-
+       @media (max-width: 480px) {
     .otp-inputs input {
-        width: 40px;
-        height: 50px;
-        font-size: 1.4rem;
+        width: 38px;
+        height: 46px;
+        font-size: 1.2rem;
     }
 
     h4 {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
     }
 
     .btn {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         padding: 0.4rem 0;
     }
 }
+
 
 
     </style>
