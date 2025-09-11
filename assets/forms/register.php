@@ -53,12 +53,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $mail->isHTML(true);
             $mail->Subject = "Verify Your Email - OTP Code";
-            $mail->Body    = "
-                <h2>Hello, {$username}!</h2>
-                <p>Thanks for registering for our event.</p>
-                <p>Your OTP code is: <b>{$otp}</b></p>
-                <p>Please enter this OTP on the verification page to activate your account.</p>
-            ";
+            $mail->Body = '
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OTP Verification</title>
+  <style>
+    body { margin:0; padding:0; font-family: Cinzel, serif; background-color:#1a1a1a; color:#fff; }
+    .card { 
+      max-width:600px; 
+      margin: 30px auto; 
+      background-color:#222; 
+      border:2px solid #D4AF37; 
+      border-radius:15px; 
+      box-shadow:0 0 20px rgba(0,0,0,0.7); 
+      padding:30px; 
+      text-align:center;
+    }
+    h2 { color:#D4AF37; margin:0 0 20px; font-size:24px; }
+    p { color:#ccc; font-size:16px; margin:10px 0; }
+    .otp { 
+      display:inline-block; 
+      font-size:32px; 
+      font-weight:bold; 
+      color:#D4AF37; 
+      letter-spacing:4px; 
+      margin:20px 0; 
+    }
+    .footer { 
+      font-size:12px; 
+      color:#aaa; 
+      margin-top:20px; 
+      border-top:1px solid #444; 
+      padding-top:10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Aavirbhav - Verify Your Email</h2>
+    <p>Hello <strong>' . htmlspecialchars($username) . '</strong>,</p>
+    <p>Your OTP code is:</p>
+    <div class="otp">' . htmlspecialchars($otp) . '</div>
+    <p>Enter this OTP on the verification page to activate your account. It will expire in 10 minutes.</p>
+    <div class="footer">&copy; ' . date('Y') . ' ©Aavirbhav All rights reserved.</div>
+  </div>
+</body>
+</html>
+';
 
             $mail->send();
         } catch (Exception $e) {
