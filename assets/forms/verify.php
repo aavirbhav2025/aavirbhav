@@ -7,7 +7,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require __DIR__ . '/../vendor/autoload.php';
 
-$email = $_SESSION['email'] ?? '';
+$email    = $_SESSION['email'] ?? '';
+$username = $_SESSION['username'] ?? 'User';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Handle OTP verification
@@ -31,7 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $update->bind_param("s", $email);
             $update->execute();
 
-            unset($_SESSION['email']); // clear session
+            // ✅ clear session after success
+            unset($_SESSION['email']);
+            unset($_SESSION['username']);
 
             echo "<script>alert('Email verified successfully! You can now login.');window.location='form.html';</script>";
             exit();
@@ -56,31 +59,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $update->execute();
 
         // Send email
-         try {
-        $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host       = "smtp.hostinger.com";   // ✅ Use your domain mail server
-        $mail->SMTPAuth   = true;
-        $mail->Username   = "contact@aavirbhav.tech"; // your Webmail
-        $mail->Password   = "T;h^o!oNb4";             // your Webmail password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // or SMTPS if port 465
-        $mail->Port       = 465;
+        try {
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host       = "smtp.hostinger.com"; 
+            $mail->SMTPAuth   = true;
+            $mail->Username   = "contact@aavirbhav.tech"; 
+            $mail->Password   = "T;h^o!oNb4";   // your Webmail password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
+            $mail->Port       = 587;
 
-        $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
-        $mail->addAddress($email, $username);
+            $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
+            $mail->addAddress($email, $username);
 
-        $mail->isHTML(true);
-        $mail->Subject = "Verify Your Email - OTP Code";
-        $mail->Body    = "
-            <h2>Hello, {$username}!</h2>
-            <p>Thanks for registering for our event.</p>
-            <p>Your OTP code is: <b>{$otp}</b></p>
-            <p>Please enter this OTP on the verification page to activate your account.</p>
-        ";
+            $mail->isHTML(true);
+            $mail->Subject = "Verify Your Email - OTP Code";
+            $mail->Body    = "
+                <h2>Hello, {$username}!</h2>
+                <p>Your new OTP code is: <b>{$otp}</b></p>
+                <p>Please enter this OTP on the verification page to activate your account.</p>
+            ";
 
-        $mail->send();
+            $mail->send();
+            echo "<script>alert('A new OTP has been sent to your email.');</script>";
         } catch (Exception $e) {
             error_log("Mailer Error: " . $mail->ErrorInfo);
+            echo "<script>alert('Failed to resend OTP. Please try again.');</script>";
         }
     }
 }
