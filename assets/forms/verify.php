@@ -156,7 +156,7 @@ $mail->Body = '
         /* Main Card */
         .card {
             background: rgba(77, 75, 75, 0.5);
-            border: 2px solid #D4AF37;
+            border: 2px solid #000000ff;
             border-radius: 20px;
             backdrop-filter: blur(8px);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
