@@ -131,263 +131,224 @@ $mail->Body = '
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Email Verification</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../images/favicon.png">
-    <link rel="apple-touch-icon" href="../images/favicon.png">
-    <style>
-       /* Body and background */
-body {
-    background: url('../images/bgimg.jpg') no-repeat center center fixed;
-    background-size: cover;
-    font-family: 'Segoe UI', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    /* ❌ remove overflow:hidden; so content can resize properly */
-}
-
-/* Main Card */
-.card {
-    background: rgba(77, 75, 75, 0.5);
-    border: 2px solid #D4AF37;
-    border-radius: 20px;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-    animation: fadeInUp 1s ease-in-out;
-
-    /* ✅ Responsive sizing */
-    width: 90%;          /* take most of the screen width */
-    max-width: 420px;    /* don’t exceed desktop size */
-    padding: 2rem;
-    text-align: center;
-    color: #fff;
-}
-
-/* Heading */
-h4 {
-    font-family: 'Cinzel', serif;
-    font-weight: 700;
-    color: #D4AF37;
-    font-size: 1.8rem;
-    margin-bottom: 0.3rem;
-}
-
-p {
-    color: #ccc;
-}
-
-/* Buttons */
-.btn {
-    border-radius: 30px;
-    font-weight: bold;
-    transition: all 0.3s;
-    font-size: 1rem;
-    padding: 0.5rem 0;
-}
-
-.btn-success {
-    background: linear-gradient(145deg, #b06f12, #d4af37);
-    border: 1px solid #D4AF37;
-    color: #111;
-}
-
-.btn-success:hover:not(:disabled) {
-    background: linear-gradient(145deg, #d4af37, #b06f12);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.5);
-}
-
-.btn-outline-primary {
-    border: 1px solid #5DADE2;
-    color: #5DADE2;
-    background: transparent;
-}
-
-.btn-outline-primary:hover:not(:disabled) {
-    background: #5DADE2;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(93, 173, 226, 0.5);
-}
-
-/* OTP Inputs */
-.otp-inputs {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-.otp-inputs input {
-    width: 50px;
-    height: 60px;
-    text-align: center;
-    font-size: 1.8rem;
-    border-radius: 8px;
-    border: 2px solid #D4AF37;
-    outline: none;
-    background: rgba(255, 255, 255, 0.05);
-    color: #D4AF37;
-    font-weight: bold;
-    transition: all 0.3s;
-}
-
-.otp-inputs input:focus {
-    border-color: #FF5733;
-    background: rgba(255, 87, 51, 0.2);
-    box-shadow: 0 0 12px rgba(255, 87, 51, 0.6);
-    color: #fff;
-}
-
-/* Timer text */
-#timerText {
-    color: #ccc;
-    margin-top: 10px;
-    font-size: 0.85rem;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
+  <meta charset="UTF-8">
+  <title>Email Verification</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Background */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('../images/bgimg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    /* Card */
+    .otp-card {
+      background: rgba(77, 75, 75, 0.55);
+      border: 2px solid #D4AF37;
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      color: #fff;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      animation: fadeIn 1s ease;
     }
-}
 
-/* Shake animation for wrong OTP */
-.shake {
-    animation: shake 0.5s;
-}
+    .otp-card img {
+      width: 60px;
+      margin-bottom: 10px;
+    }
 
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    50% { transform: translateX(8px); }
-    75% { transform: translateX(-8px); }
-    100% { transform: translateX(0); }
-}
+    .otp-card h4 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #D4AF37;
+      margin: 0.5rem 0;
+    }
 
-/* ✅ Responsive tweaks */
-@media (max-width: 480px) {
+    .otp-card p {
+      color: #ccc;
+      font-size: 0.95rem;
+    }
+
+    /* OTP input boxes */
+    .otp-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 1rem 0;
+    }
     .otp-inputs input {
+      width: 48px;
+      height: 55px;
+      font-size: 1.5rem;
+      text-align: center;
+      border-radius: 8px;
+      border: 2px solid #D4AF37;
+      background: rgba(255,255,255,0.05);
+      color: #D4AF37;
+      font-weight: bold;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .otp-inputs input:focus {
+      border-color: #FF5733;
+      background: rgba(255,87,51,0.2);
+      box-shadow: 0 0 10px rgba(255,87,51,0.5);
+      color: #fff;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 48%;
+      border-radius: 25px;
+      padding: 0.6rem;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+    .btn-verify {
+      background: linear-gradient(145deg, #b06f12, #d4af37);
+      color: #111;
+    }
+    .btn-verify:hover {
+      background: linear-gradient(145deg, #d4af37, #b06f12);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(212,175,55,0.5);
+    }
+    .btn-resend {
+      background: transparent;
+      border: 2px solid #5DADE2;
+      color: #5DADE2;
+    }
+    .btn-resend:hover:not(:disabled) {
+      background: #5DADE2;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(93,173,226,0.5);
+    }
+    .btn-resend:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Timer text */
+    #timerText {
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-top: 10px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity:0; transform: translateY(30px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+
+    .shake { animation: shake 0.4s; }
+    @keyframes shake {
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .otp-inputs input {
         width: 38px;
         height: 46px;
         font-size: 1.2rem;
+      }
+      .btn { font-size: 0.85rem; padding: 0.45rem; }
+      .otp-card h4 { font-size: 1.4rem; }
     }
-
-    h4 {
-        font-size: 1.2rem;
-    }
-
-    .btn {
-        font-size: 0.85rem;
-        padding: 0.4rem 0;
-    }
-}
-
-@media (max-width: 360px) {
-    .otp-inputs {
-        gap: 8px;
-    }
-    .otp-inputs input {
+    @media (max-width: 360px) {
+      .otp-inputs { gap: 6px; }
+      .otp-inputs input {
         width: 32px;
         height: 42px;
         font-size: 1rem;
+      }
     }
-}
-
-    </style>
+  </style>
 </head>
-
 <body>
-    <div class="card shadow-lg" id="otpCard">
-        <img src="../images/favicon.png" alt="logo" width="60" class="mb-2 d-block mx-auto">
-        <h4>Email Verification</h4>
-        <p>Enter the OTP sent to your registered email</p>
+  <div class="otp-card" id="otpCard">
+    <img src="../images/favicon.png" alt="logo">
+    <h4>Email Verification</h4>
+    <p>Enter the OTP sent to your registered email</p>
 
-        <form method="POST" id="otpForm">
-            <label class="form-label d-block mt-2">Enter OTP</label>
-            <div class="otp-inputs">
-                <input type="text" name="otp[]" maxlength="1" required>
-                <input type="text" name="otp[]" maxlength="1" required>
-                <input type="text" name="otp[]" maxlength="1" required>
-                <input type="text" name="otp[]" maxlength="1" required>
-                <input type="text" name="otp[]" maxlength="1" required>
-                <input type="text" name="otp[]" maxlength="1" required>
-            </div>
+    <form id="otpForm" method="POST">
+      <div class="otp-inputs">
+        <div class="otp-inputs">
+  <input type="tel" name="otp[]" inputmode="numeric" pattern="[0-9]*" maxlength="1" required>
+  <input type="tel" name="otp[]" inputmode="numeric" pattern="[0-9]*" maxlength="1" required>
+  <input type="tel" name="otp[]" inputmode="numeric" pattern="[0-9]*" maxlength="1" required>
+  <input type="tel" name="otp[]" inputmode="numeric" pattern="[0-9]*" maxlength="1" required>
+  <input type="tel" name="otp[]" inputmode="numeric" pattern="[0-9]*" maxlength="1" required>
+  <input type="tel" name="otp[]" inputmode="numeric" pattern="[0-9]*" maxlength="1" required>
+</div>
 
-            <div class="d-flex gap-2 mt-3">
-                <button type="submit" name="verify" class="btn btn-success flex-fill">Verify</button>
-                <button type="submit" name="resend" id="resendBtn"
-                    class="btn btn-outline-primary flex-fill">Resend</button>
-            </div>
-            <p class="text-center" id="timerText"></p>
-        </form>
-    </div>
+      </div>
 
-    <script>
-        // Countdown logic for Resend OTP button
-const resendBtn = document.getElementById("resendBtn");
-const timerText = document.getElementById("timerText");
+      <div style="display:flex; justify-content: space-between; gap:10px;">
+        <button type="submit" class="btn btn-verify">Verify</button>
+        <button type="button" id="resendBtn" class="btn btn-resend">Resend</button>
+      </div>
+      <p id="timerText"></p>
+    </form>
+  </div>
 
-function startCountdown(duration) {
-    let remaining = duration;
-    resendBtn.disabled = true;
-    timerText.textContent = `Resend available in ${remaining}s`;
+  <script>
+    // OTP auto-focus
+    const inputs = document.querySelectorAll('.otp-inputs input');
+    inputs.forEach((input, i) => {
+      input.addEventListener('input', () => {
+        if (input.value && i < inputs.length-1) inputs[i+1].focus();
+      });
+      input.addEventListener('keydown', e => {
+        if (e.key === "Backspace" && !input.value && i > 0) inputs[i-1].focus();
+      });
+    });
 
-    const countdown = setInterval(() => {
-        remaining--;
-        if (remaining > 0) {
-            timerText.textContent = `Resend available in ${remaining}s`;
+    // Countdown logic for resend
+    const resendBtn = document.getElementById('resendBtn');
+    const timerText = document.getElementById('timerText');
+    function startCountdown(sec) {
+      resendBtn.disabled = true;
+      timerText.textContent = `Resend available in ${sec}s`;
+      let timer = setInterval(() => {
+        sec--;
+        if (sec > 0) {
+          timerText.textContent = `Resend available in ${sec}s`;
         } else {
-            clearInterval(countdown);
-            resendBtn.disabled = false;
-            timerText.textContent = "You can resend OTP now.";
+          clearInterval(timer);
+          resendBtn.disabled = false;
+          timerText.textContent = "You can resend OTP now.";
         }
-    }, 1000);
-}
+      }, 1000);
+    }
+    startCountdown(30);
 
-window.onload = () => startCountdown(30);
-
-// Auto-focus next input
-const otpInputs = document.querySelectorAll('.otp-inputs input');
-otpInputs.forEach((input, index) => {
-    input.addEventListener('input', () => {
-        if (input.value.length === 1 && index < otpInputs.length - 1) {
-            otpInputs[index + 1].focus();
-        }
-    });
-
-    input.addEventListener('keydown', (e) => {
-        if (e.key === "Backspace" && !input.value && index > 0) {
-            otpInputs[index - 1].focus();
-        }
-    });
-});
-
-// Shake effect for wrong OTP (triggered by PHP via URL parameter)
-window.addEventListener('DOMContentLoaded', () => {
+    // Shake effect if wrong OTP (simulate)
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('wrong') === '1') {
-        const card = document.getElementById('otpCard');
-        card.classList.add('shake');
-        setTimeout(() => card.classList.remove('shake'), 500);
+      const card = document.getElementById('otpCard');
+      card.classList.add('shake');
+      setTimeout(()=>card.classList.remove('shake'), 400);
     }
-});
-
-    </script>
+  </script>
 </body>
-
 </html>
