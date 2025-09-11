@@ -59,12 +59,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          try {
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->Host       = "mail.aavirbhav.tech";   // ✅ Use your domain mail server
+        $mail->Host       = "smtp.hostinger.com";   // ✅ Use your domain mail server
         $mail->SMTPAuth   = true;
         $mail->Username   = "contact@aavirbhav.tech"; // your Webmail
         $mail->Password   = "T;h^o!oNb4";             // your Webmail password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // or SMTPS if port 465
-        $mail->Port       = 587;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // or SMTPS if port 465
+        $mail->Port       = 465;
 
         $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
         $mail->addAddress($email, $username);
