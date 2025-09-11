@@ -308,7 +308,8 @@ $mail->Body = '
                 padding: 0.45rem 0;
             }
             .card{
-                max-width: 620px !important;
+                width: 520px !important;
+                
             }
         }
     </style>
