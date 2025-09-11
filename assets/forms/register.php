@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Username   = "contact@aavirbhav.tech";  // replace with your email
             $mail->Password   = "T;h^o!oNb4";     // Gmail app password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port       = 587;
+            $mail->Port       = 465;
 
             $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
             $mail->addAddress($email, $username);
