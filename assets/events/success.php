@@ -56,8 +56,9 @@ ul li::before { content:"⚔️ "; }
 <hr>
 <p><strong>Registration ID:</strong> <?= htmlspecialchars($registration['id']); ?></p>
 <p><strong>Amount Paid:</strong> ₹<?= number_format($registration['amount'],2); ?></p>
+<p><strong>Registered At:</strong> <?= htmlspecialchars($registration['created_at']); ?></p>
 <hr>
-<h4>Events:</h4>
+<h4>Registered Events:</h4>
 <ul>
 <?php foreach($events as $event) { echo "<li>" . htmlspecialchars($event) . "</li>"; } ?>
 </ul>
@@ -107,7 +108,10 @@ try {
     $mail->Subject = "Your Aavirbhav 2025 Registration Receipt";
     $mail->Body = "
         <h2>Hello ".htmlspecialchars($registration['name']).",</h2>
-        <p>Thank you for registering the events! Your receipt is attached below.Bring Xerox of receipt on event day. See you there....!</p>
+        <p> The journey begins…! </p>
+        <p>Your registration for Aavirbhav 2025 is confirmed.
+The receipt is attached below — bring a copy on the event day.</p>
+        <p>Victory awaits — see you at the event!</p>
     ";
 
     // Attach PDF
@@ -137,8 +141,13 @@ h2 { font-weight:bold; color:gold; text-shadow:0 0 5px #000; }
 <body>
 <div class="container mt-5">
 <div class="invoice-box">
-<h2>Receipt Generated & Email Sent</h2>
-<p><?= $emailStatus ?></p>
+    <div class="text-center">
+            <img src="../images/logo.png" alt="Event Logo" class="logo">
+            <h2 class="mb-4">Aavirbhav 2025</h2>
+            <h2 class="mb-4">Event Registration Receipt</h2>
+            <p><?= $emailStatus ?></p>
+        </div>
+
 
 <p><strong>Name:</strong> <?= htmlspecialchars($registration['name']); ?></p>
 <p><strong>Contact:</strong> <?= htmlspecialchars($registration['phone']); ?></p>
@@ -149,8 +158,9 @@ h2 { font-weight:bold; color:gold; text-shadow:0 0 5px #000; }
 <hr>
 <p><strong>Registration ID:</strong> <?= htmlspecialchars($registration['id']); ?></p>
 <p><strong>Amount Paid:</strong> ₹<?= number_format($registration['amount'],2); ?></p>
+<p><strong>Registered At:</strong> <?= htmlspecialchars($registration['created_at']); ?></p>
 
-<h4>Events:</h4>
+<h4>Registered Events:</h4>
 <ul>
 <?php foreach($events as $event) { echo "<li>" . htmlspecialchars($event) . "</li>"; } ?>
 </ul>
