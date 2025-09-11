@@ -325,7 +325,7 @@ $mail->Body = '
 </head>
 <body>
   <div class="otp-card" id="otpCard">
-    <img src="../images/logo.png" alt="logo">
+    <img src="../images/favicon.png" alt="logo">
     <h4>Email Verification</h4>
     <p>Enter the OTP sent to your registered email</p>
 
