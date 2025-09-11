@@ -22,12 +22,6 @@ $eventPrices = [
 ];
 $defaultPrice = 100;
 
-$events = $_POST['events'] ?? [];
-
-if (empty($events)) {
-    die("Error: Please select at least one event.");
-}
-
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $type = $_POST['type'] ?? 'individual';
@@ -208,6 +202,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalPriceEl = document.getElementById("totalPrice");
     const itCheckboxes = document.querySelectorAll(".it-event");
     const openCheckboxes = document.querySelectorAll(".open-event");
+
+    document.getElementById("eventForm").addEventListener("submit", function (e) {
+    const checkedEvents = document.querySelectorAll(".event-checkbox:checked");
+    if (checkedEvents.length === 0) {
+        e.preventDefault(); // stop submission
+        alert("⚠️ Please select at least one event before proceeding.");
+        return false;
+    }
+});
+
 
     function participantInput(eventName, i) {
         let safeName = eventName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
