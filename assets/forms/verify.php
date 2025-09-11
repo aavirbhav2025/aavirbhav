@@ -13,36 +13,32 @@ $username = $_SESSION['username'] ?? 'User';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Handle OTP verification
     if (isset($_POST['verify'])) {
-        $otp = $_POST['otp'] ?? '';
+    $otpArray = $_POST['otp'] ?? [];
+    $otp = implode('', $otpArray); // combine 6 digits
 
-        if (!$email) {
-            echo "<script>alert('Session expired, please register again');window.location='form.html';</script>";
-            exit();
-        }
+    $sql = "SELECT * FROM users WHERE email=? AND otp=? AND status=0";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $email, $otp);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $sql = "SELECT * FROM users WHERE email=? AND otp=? AND status=0";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $email, $otp);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        // Correct OTP: mark verified
+        $update = $conn->prepare("UPDATE users SET status=1, otp=NULL WHERE email=?");
+        $update->bind_param("s", $email);
+        $update->execute();
 
-        if ($result->num_rows > 0) {
-            // Mark as verified
-            $update = $conn->prepare("UPDATE users SET status=1, otp=NULL WHERE email=?");
-            $update->bind_param("s", $email);
-            $update->execute();
+        unset($_SESSION['email'], $_SESSION['username']);
 
-            // ✅ clear session after success
-            unset($_SESSION['email']);
-            unset($_SESSION['username']);
-
-            echo "<script>alert('Email verified successfully! You can now login.');window.location='form.html';</script>";
-            exit();
-        } else {
-            echo "<script>alert('Invalid OTP, please try again');window.history.back();</script>";
-            exit();
-        }
+        echo "<script>alert('Email verified successfully!');window.location='form.html';</script>";
+        exit();
+    } else {
+        // Wrong OTP: redirect with flag to trigger shake
+        header("Location: verify.php?wrong=1");
+        exit();
     }
+}
+
 
     // Handle Resend OTP
     if (isset($_POST['resend'])) {
@@ -343,53 +339,54 @@ $mail->Body = '
 
     <script>
         // Countdown logic for Resend OTP button
-        const resendBtn = document.getElementById("resendBtn");
-        const timerText = document.getElementById("timerText");
+const resendBtn = document.getElementById("resendBtn");
+const timerText = document.getElementById("timerText");
 
-        function startCountdown(duration) {
-            let remaining = duration;
-            resendBtn.disabled = true;
+function startCountdown(duration) {
+    let remaining = duration;
+    resendBtn.disabled = true;
+    timerText.textContent = `Resend available in ${remaining}s`;
+
+    const countdown = setInterval(() => {
+        remaining--;
+        if (remaining > 0) {
             timerText.textContent = `Resend available in ${remaining}s`;
-
-            const countdown = setInterval(() => {
-                remaining--;
-                if (remaining > 0) {
-                    timerText.textContent = `Resend available in ${remaining}s`;
-                } else {
-                    clearInterval(countdown);
-                    resendBtn.disabled = false;
-                    timerText.textContent = "You can resend OTP now.";
-                }
-            }, 1000);
+        } else {
+            clearInterval(countdown);
+            resendBtn.disabled = false;
+            timerText.textContent = "You can resend OTP now.";
         }
-        window.onload = () => startCountdown(30);
+    }, 1000);
+}
 
-        // Auto-focus next input
-        const otpInputs = document.querySelectorAll('.otp-inputs input');
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', () => {
-                if (input.value.length === 1 && index < otpInputs.length - 1) {
-                    otpInputs[index + 1].focus();
-                }
-            });
-            input.addEventListener('keydown', (e) => {
-                if (e.key === "Backspace" && !input.value && index > 0) {
-                    otpInputs[index - 1].focus();
-                }
-            });
-        });
+window.onload = () => startCountdown(30);
 
-        // Example shake effect for wrong OTP
-        document.getElementById('otpForm').addEventListener('submit', (e) => {
-            // Replace this with actual verification logic
-            e.preventDefault();
-            const fakeIsWrong = true; // simulate wrong OTP
-            if (fakeIsWrong) {
-                const card = document.getElementById('otpCard');
-                card.classList.add('shake');
-                setTimeout(() => card.classList.remove('shake'), 500);
-            }
-        });
+// Auto-focus next input
+const otpInputs = document.querySelectorAll('.otp-inputs input');
+otpInputs.forEach((input, index) => {
+    input.addEventListener('input', () => {
+        if (input.value.length === 1 && index < otpInputs.length - 1) {
+            otpInputs[index + 1].focus();
+        }
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === "Backspace" && !input.value && index > 0) {
+            otpInputs[index - 1].focus();
+        }
+    });
+});
+
+// Shake effect for wrong OTP (triggered by PHP via URL parameter)
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('wrong') === '1') {
+        const card = document.getElementById('otpCard');
+        card.classList.add('shake');
+        setTimeout(() => card.classList.remove('shake'), 500);
+    }
+});
+
     </script>
 </body>
 
