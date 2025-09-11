@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $otp = rand(100000, 999999);
 
     // Insert into database
-    $sql = "INSERT INTO users (username, phone, clgname, email, password, otp, status) 
+    $sql = "INSERT INTO users (username, number, clgname, email, password, otp, status) 
             VALUES (?, ?, ?, ?, ?, ?, 0)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssss", $username, $phone, $clgname, $email, $hashedPassword, $otp);
