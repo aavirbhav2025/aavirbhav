@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $check->close();
 
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $otp = rand(100000, 999999);
 
     // Insert into database
@@ -40,7 +40,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ssssss", $username, $phone, $clgname, $email, $hashedPassword, $otp);
 
     if ($stmt->execute()) {
-        // Store email in session for verification
         $_SESSION['email'] = $email;
 
         // Send OTP email
