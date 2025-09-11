@@ -103,12 +103,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
   <div class="card">
-    <h2>Aavirbhav - Verify Your Email</h2>
+    <h2>Aavirbhav 2025</h2>
+    <h2>Verify Your Email</h2>
     <p>Hello <strong>' . htmlspecialchars($username) . '</strong>,</p>
     <p>Your OTP code is:</p>
     <div class="otp">' . htmlspecialchars($otp) . '</div>
     <p>Enter this OTP on the verification page to activate your account. It will expire in 10 minutes.</p>
-    <div class="footer">&copy; ' . date('Y') . ' ©Aavirbhav All rights reserved.</div>
+    <div class="footer">&copy; ' . date('Y') . 'Aavirbhav All rights reserved.</div>
   </div>
 </body>
 </html>
