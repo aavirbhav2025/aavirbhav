@@ -64,12 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
 
     if ($stmt->execute()) {
-        echo "Registration saved!";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
-
-    if ($stmt->execute()) {
     // Redirect to success.php after insert
     header("Location: success.php");
     exit(); // Always call exit() after header redirect
