@@ -156,7 +156,7 @@ $mail->Body = '
         /* Main Card */
         .card {
             background: rgba(77, 75, 75, 0.5);
-            border: 2px solid #000000ff;
+            border: 2px solid #D4AF37;
             border-radius: 20px;
             backdrop-filter: blur(8px);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
@@ -292,26 +292,27 @@ $mail->Body = '
         }
 
         /* Responsive */
-        @media (max-width: 780px) {
-            .otp-inputs input {
-                width: 40px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
+       @media (max-width: 780px) {
+    .card {
+        width: 90% !important;   /* instead of 720px */
+    }
 
-            h4 {
-                font-size: 1.5rem;
-            }
+    .otp-inputs input {
+        width: 40px;
+        height: 50px;
+        font-size: 1.4rem;
+    }
 
-            .btn {
-                font-size: 0.95rem;
-                padding: 0.45rem 0;
-            }
-            .card{
-                width: 720px !important;
-                
-            }
-        }
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.4rem 0;
+    }
+}
+
     </style>
 </head>
 
