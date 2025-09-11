@@ -76,8 +76,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     // Show error if insert fails
     echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-    echo "<pre>";
-    var_dump($userName, $userEmail, $userContact, $type, $events, $participants, $amount);
     
 }
     $stmt->close();
