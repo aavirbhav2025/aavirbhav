@@ -20,6 +20,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
+    $check = $conn->prepare("SELECT id FROM users WHERE email=? LIMIT 1");
+    $check->bind_param("s", $email);
+    $check->execute();
+    $check->store_result();
+
+    if ($check->num_rows > 0) {
+        echo "<script>alert('Email already registered! Please login or use a different email.');window.history.back();</script>";
+        exit();
+    }
+    $check->close();
+
     // Hash password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
