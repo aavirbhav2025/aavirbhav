@@ -209,16 +209,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const itCheckboxes = document.querySelectorAll(".it-event");
     const openCheckboxes = document.querySelectorAll(".open-event");
 
-    document.getElementById("eventForm").addEventListener("submit", function (e) {
-    const checkedEvents = document.querySelectorAll(".event-checkbox:checked");
-    if (checkedEvents.length === 0) {
-        e.preventDefault(); // stop submission
-        alert("⚠️ Please select at least one event before proceeding.");
-        return false;
-    }
-});
-
-
     function participantInput(eventName, i) {
         let safeName = eventName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
         return `
