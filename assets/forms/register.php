@@ -8,12 +8,42 @@ use PHPMailer\PHPMailer\Exception;
 require __DIR__ . '/../vendor/autoload.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'] ?? '';
-    $phone    = $_POST['phone'] ?? '';
-    $clgname  = $_POST['clgname'] ?? '';
-    $email    = $_POST['email'] ?? '';
+    $username = trim($_POST['username'] ?? '');
+    $phone    = trim($_POST['phone'] ?? '');
+    $clgname  = trim($_POST['clgname'] ?? '');
+    $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $cpass    = $_POST['confirm_password'] ?? '';
+
+    // ✅ Basic required field check
+    if (empty($username) || empty($phone) || empty($clgname) || empty($email) || empty($password) || empty($cpass)) {
+        echo "<script>alert('All fields are required');window.history.back();</script>";
+        exit();
+    }
+
+    // ✅ Email validation
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>alert('Invalid email format');window.history.back();</script>";
+        exit();
+    }
+
+    // ✅ Phone validation (10 digits for India, change as needed)
+    if (!preg_match('/^[0-9]{10}$/', $phone)) {
+        echo "<script>alert('Invalid phone number');window.history.back();</script>";
+        exit();
+    }
+
+    // ✅ Password length check
+    if (strlen($password) < 6) {
+        echo "<script>alert('Password must be at least 6 characters long');window.history.back();</script>";
+        exit();
+    }
+
+    // ✅ Confirm password check
+    if ($password !== $cpass) {
+        echo "<script>alert('Passwords do not match');window.history.back();</script>";
+        exit();
+    }
 
     if ($password !== $cpass) {
         echo "<script>alert('Passwords do not match');window.history.back();</script>";

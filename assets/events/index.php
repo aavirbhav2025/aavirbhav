@@ -38,17 +38,36 @@ $qrSrc = "../images/" . htmlspecialchars($qrImage);
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $utr = $_POST['transaction_id'] ?? '';
 
     $sql = "INSERT INTO registrations 
-            (name, email, phone, type, events, participants, amount, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+            (name, email, phone, type, events, participants, amount, order_id, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+
     $stmt = $conn->prepare($sql);
 
     if (!$stmt) {
         die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
     }
 
-    $stmt->bind_param("ssssssd", $userName, $userEmail, $userContact, $type, $events, $participants, $amount);
+    // s = string, d = double/decimal
+    $stmt->bind_param(
+        "ssssssds",
+        $userName,       // string
+        $userEmail,      // string
+        $userContact,    // string
+        $type,           // string
+        $events,         // string
+        $participants,   // string
+        $amount,         // double/decimal
+        $utr             // string (order_id)
+    );
+
+    if ($stmt->execute()) {
+        echo "Registration saved!";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
 
     if ($stmt->execute()) {
     // Redirect to success.php after insert
@@ -141,7 +160,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="post" enctype="multipart/form-data" class="text-start">
             <div class="mb-3">
                 <label class="form-label">Registrant Email *</label>
-                <input type="email" name="registrant_email" class="form-control" placeholder="Enter Email" required>
+                <input type="email" 
+       name="registrant_email" 
+       class="form-control" 
+       value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>" 
+       placeholder="Enter Email" 
+       readonly>
+
             </div>
             <div class="mb-3">
                 <label class="form-label">Transaction/UTR ID *</label>
