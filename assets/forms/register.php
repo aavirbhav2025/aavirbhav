@@ -1,5 +1,10 @@
 <?php
-include 'db.php'; // DB connection file
+include 'db.php'; 
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require __DIR__ . '../vendor/autoload.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
@@ -11,35 +16,69 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Password check
     if ($password !== $confirm_password) {
-        echo "<script>alert('❌ Passwords do not match'); window.location.href='form.html';</script>";
+        echo "<script>alert(' Passwords do not match'); window.location.href='form.html';</script>";
         exit();
     }
 
-    // Check duplicate email
     $check = $conn->prepare("SELECT email FROM users WHERE email = ?");
     $check->bind_param("s", $email);
     $check->execute();
     $check->store_result();
     if ($check->num_rows > 0) {
-        echo "<script>alert('❌ Email already registered'); window.location.href='form.html';</script>";
+        echo "<script>alert(' Email already registered'); window.location.href='form.html';</script>";
         exit();
     }
     $check->close();
 
-    // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $otp = rand(100000, 999999);
 
     // Insert into database
-    $sql = $conn->prepare("INSERT INTO users (username, number, clgname, email, password) VALUES (?, ?, ?, ?, ?)");
-    $sql->bind_param("sssss", $username, $phone, $clgname, $email, $hashed_password);
+    $sql = "INSERT INTO users (username, phone, clgname, email, password, otp, status) 
+            VALUES (?, ?, ?, ?, ?, ?, 0)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssss", $username, $phone, $clgname, $email, $hashedPassword, $otp);
 
-    if ($sql->execute()) {
-        echo "<script>alert('✅ Registration Done! Please login'); window.location.href='form.html';</script>";
+    if ($stmt->execute()) {
+        // Store email in session for verification
+        $_SESSION['email'] = $email;
+
+        // Send OTP email
+        try {
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host       = "mail.hostinger.com/";        // SMTP server
+            $mail->SMTPAuth   = true;
+            $mail->Username   = "contact@aavirbhav.tech";  // replace with your email
+            $mail->Password   = "T;h^o!oNb4";     // Gmail app password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = 587;
+
+            $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
+            $mail->addAddress($email, $username);
+
+            $mail->isHTML(true);
+            $mail->Subject = "Verify Your Email - OTP Code";
+            $mail->Body    = "
+                <h2>Hello, {$username}!</h2>
+                <p>Thanks for registering for our event.</p>
+                <p>Your OTP code is: <b>{$otp}</b></p>
+                <p>Please enter this OTP on the verification page to activate your account.</p>
+            ";
+
+            $mail->send();
+        } catch (Exception $e) {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+        }
+
+        // Redirect to verify page
+        header("Location: verify.php");
+        exit();
     } else {
-        echo "<script>alert('❌ Registration failed'); window.location.href='form.html';</script>";
+        echo "<script>alert('Registration failed, please try again');window.history.back();</script>";
     }
 
-    $sql->close();
+    $stmt->close();
     $conn->close();
 }
 ?>
