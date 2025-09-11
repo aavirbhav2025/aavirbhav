@@ -304,8 +304,9 @@ $mail->Body = '
       </div>
 
       <div style="display:flex; justify-content: space-between; gap:10px;">
-        <button type="submit" class="btn btn-verify">Verify</button>
-        <button type="button" id="resendBtn" class="btn btn-resend">Resend</button>
+        <button type="submit" name="verify" class="btn btn-verify">Verify</button>
+<button type="submit" name="resend" id="resendBtn" class="btn btn-resend">Resend</button>
+
       </div>
       <p id="timerText"></p>
     </form>
