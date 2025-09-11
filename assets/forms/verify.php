@@ -292,7 +292,7 @@ $mail->Body = '
         }
 
         /* Responsive */
-        @media (max-width: 500px) {
+        @media (max-width: 780px) {
             .otp-inputs input {
                 width: 40px;
                 height: 50px;
