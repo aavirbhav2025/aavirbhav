@@ -7,15 +7,14 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-
 $userName    = $_SESSION['username'] ?? '';
 $userContact = $_SESSION['phone'] ?? '';
 $userEmail   = $_SESSION['email'] ?? '';
 
 $registration = $_SESSION['registration'];
 $type         = $registration['type'] ?? 'individual';
-$events       = json_encode($registration['events']);        // store as JSON
-$participants = json_encode($registration['participants']);  // store as JSON
+$events       = json_encode($registration['events']);        
+$participants = json_encode($registration['participants']);  
 $amount      = $_SESSION['registration']['amount'] ?? 0;
 
 $qrImages = [
@@ -27,50 +26,34 @@ $qrImages = [
     2600 => "2600.jpg",
     3400 => "3400.jpg"
 ];
-
-// Pick correct QR code or default
 $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
-
-// Build the web URL to the image under XAMPP.
-// If the site runs at http://localhost/aavirbhav/, use a root-relative URL from that project root:
 $qrSrc = "../images/" . htmlspecialchars($qrImage);
-
-
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $utr = $_POST['transaction_id'] ?? '';
-
     $sql = "INSERT INTO registrations 
             (name, email, phone, type, events, participants, amount, order_id, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-
     $stmt = $conn->prepare($sql);
-
     if (!$stmt) {
         die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
     }
-
-    // s = string, d = double/decimal
     $stmt->bind_param(
         "ssssssds",
-        $userName,       // string
-        $userEmail,      // string
-        $userContact,    // string
-        $type,           // string
-        $events,         // string
-        $participants,   // string
-        $amount,         // double/decimal
-        $utr             // string (order_id)
+        $userName,     
+        $userEmail,    
+        $userContact,  
+        $type,         
+        $events,       
+        $participants, 
+        $amount,      
+        $utr             
     );
 
     if ($stmt->execute()) {
-    // Redirect to success.php after insert
     header("Location: success.php");
-    exit(); // Always call exit() after header redirect
+    exit(); 
 } else {
-    // Show error if insert fails
-    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-    
+    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;    
 }
     $stmt->close();
     $conn->close();
