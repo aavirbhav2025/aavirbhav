@@ -56,29 +56,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $update->execute();
 
         // Send email
-        try {
-            $mail = new PHPMailer(true);
-            $mail->isSMTP();
-            $mail->Host       = "mail.hostinger.com/";        // SMTP server
-            $mail->SMTPAuth   = true;
-            $mail->Username   = "contact@aavirbhav.tech";  // replace with your email
-            $mail->Password   = "T;h^o!oNb4";     // Gmail app password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
+         try {
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host       = "mail.aavirbhav.tech";   // ✅ Use your domain mail server
+        $mail->SMTPAuth   = true;
+        $mail->Username   = "contact@aavirbhav.tech"; // your Webmail
+        $mail->Password   = "T;h^o!oNb4";             // your Webmail password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // or SMTPS if port 465
+        $mail->Port       = 587;
 
-            $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
-            $mail->addAddress($email, $username);
+        $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
+        $mail->addAddress($email, $username);
 
-            $mail->isHTML(true);
-            $mail->Subject = "Verify Your Email - OTP Code";
-            $mail->Body    = "
-                <h2>Hello, {$username}!</h2>
-                <p>Thanks for registering for our event.</p>
-                <p>Your OTP code is: <b>{$otp}</b></p>
-                <p>Please enter this OTP on the verification page to activate your account.</p>
-            ";
+        $mail->isHTML(true);
+        $mail->Subject = "Verify Your Email - OTP Code";
+        $mail->Body    = "
+            <h2>Hello, {$username}!</h2>
+            <p>Thanks for registering for our event.</p>
+            <p>Your OTP code is: <b>{$otp}</b></p>
+            <p>Please enter this OTP on the verification page to activate your account.</p>
+        ";
 
-            $mail->send();
+        $mail->send();
         } catch (Exception $e) {
             error_log("Mailer Error: " . $mail->ErrorInfo);
         }
