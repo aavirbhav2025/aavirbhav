@@ -159,7 +159,7 @@ $mail->Body = '
             border: 2px solid #D4AF37;
             border-radius: 20px;
             backdrop-filter: blur(8px);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 20px rgba(245, 180, 82, 0.7);
             animation: fadeInUp 1s ease-in-out;
             width: 100%;
             max-width: 420px;
@@ -294,7 +294,8 @@ $mail->Body = '
         /* Responsive */
        @media (max-width: 780px) {
     .card {
-        width: 90% !important;   /* instead of 720px */
+        width: 90% !important;   /* take up most of the screen width */
+        max-width: 400px;        /* but don’t stretch too much */
     }
 
     .otp-inputs input {
@@ -312,6 +313,7 @@ $mail->Body = '
         padding: 0.4rem 0;
     }
 }
+
 
     </style>
 </head>
