@@ -74,6 +74,8 @@ if(!empty($participants)){
 }
 ?>
 </ul>
+<hr>
+    <p class="text-center" style="color: gold;">In the Game of Thrones, you win or you pay.</p>
 </div>
 </body>
 </html>
@@ -177,7 +179,13 @@ if(!empty($participants)){
 }
 ?>
 </ul>
-</div>
+<hr>
+        <p class="text-center" style="color: gold;">In the Game of Thrones, you win or you pay.</p>
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="../forms/logout.php" class="btn btn-danger ms-2">Return to Home</a>
+    </div>
 </div>
 </body>
 </html>
