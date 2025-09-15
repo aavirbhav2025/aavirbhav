@@ -2,7 +2,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require __DIR__ . 'assets/vendor/autoload.php'; // adjust path to autoload.php
+require __DIR__ . '/assets/vendor/autoload.php'; // adjust path to autoload.php
 
 $mail = new PHPMailer(true);
 
