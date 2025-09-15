@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 require 'db.php';
 
@@ -58,14 +61,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             $mail = new PHPMailer(true);
             $mail->isSMTP();
-            $mail->Host       = "smtp.hostinger.com"; 
+            $mail->Host       = "smtp.gmail.com"; // Hostinger SMTP
             $mail->SMTPAuth   = true;
-            $mail->Username   = "contact@aavirbhav.tech"; 
-            $mail->Password   = "T;h^o!oNb4";   // your Webmail password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
+            $mail->Username   = "aavirbhav2025@gmail.com"; // your webmail
+            $mail->Password   = "zeza ifuy joqk wlbu";             // your webmail password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
-            $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
+            $mail->setFrom("aavirbhav2025@gmail.com", "Aavirbhav Event");
             $mail->addAddress($email, $username);
 
             $mail->isHTML(true);

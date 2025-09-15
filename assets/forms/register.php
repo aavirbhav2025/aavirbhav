@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Host       = "smtp.gmail.com"; // Hostinger SMTP
             $mail->SMTPAuth   = true;
             $mail->Username   = "aavirbhav2025@gmail.com"; // your webmail
-            $mail->Password   = "Aavirbhav@mca.2025";             // your webmail password
+            $mail->Password   = "zeza ifuy joqk wlbu";             // your webmail password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
