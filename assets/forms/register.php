@@ -82,14 +82,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             $mail = new PHPMailer(true);
             $mail->isSMTP();
-            $mail->Host       = "46.28.44.195:8090"; // Hostinger SMTP
+            $mail->Host       = "smtp.gmail.com"; // Hostinger SMTP
             $mail->SMTPAuth   = true;
-            $mail->Username   = "contact@aavirbhav.tech"; // your webmail
-            $mail->Password   = "Lz59+^E@-yg@yxuy";             // your webmail password
+            $mail->Username   = "aavirbhav2025@gmail.com"; // your webmail
+            $mail->Password   = "Aavirbhav@mca.2025";             // your webmail password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
-            $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event");
+            $mail->setFrom("aavirbhav2025@gmail.com", "Aavirbhav Event");
             $mail->addAddress($email, $username);
 
             $mail->isHTML(true);
