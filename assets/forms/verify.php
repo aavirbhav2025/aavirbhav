@@ -18,8 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['verify'])) {
     $otpArray = $_POST['otp'] ?? [];
     $otp = implode('', $otpArray); // combine 6 digits
-
-    print_r($otp); exit;
         
     $sql = "SELECT * FROM users WHERE email=? AND otp=? AND status=0";
     $stmt = $conn->prepare($sql);
@@ -29,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows > 0) {
         // Correct OTP: mark verified
-        $update = $conn->prepare("UPDATE users SET status=1, otp=NULL WHERE email=?");
+        $update = $conn->prepare("UPDATE users SET status=1, otp='varified' WHERE email=?");
         $update->bind_param("s", $email);
         $update->execute();
 
