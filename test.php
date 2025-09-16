@@ -17,7 +17,7 @@ try {
     $mail->Port       = 587;
 
     // Recipients
-    $mail->setFrom('yourgmail@gmail.com', 'Mailer Test');
+    $mail->setFrom('harikiranap123@gmail.com', 'Mailer Test');
     $mail->addAddress('anotheremail@example.com', 'Test User'); // receiver
 
     // Content
