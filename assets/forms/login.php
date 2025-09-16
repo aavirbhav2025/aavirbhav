@@ -6,22 +6,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // ===== Static admin credentials (quick & simple) =====
-    // Replace these with your desired admin email/password.
-    $ADMIN_EMAIL = 'aavirbhav2025';
-    $ADMIN_PASSWORD = 'hakirianap123';
-
-    if ($email === $ADMIN_EMAIL && $password === $ADMIN_PASSWORD) {
-        // Admin login successful
-        $_SESSION['username'] = 'admin';
-        $_SESSION['email'] = $ADMIN_EMAIL;
+    // 🔹 Static admin login check
+    if ($email === "harikiranap2003@gmail.com" && $password === "hari123") {
+        $_SESSION['username'] = "Admin";
+        $_SESSION['email'] = $email;
         $_SESSION['is_admin'] = true;
 
-        echo "<script>alert('Admin login successful'); window.location.href='../admin/admin.php';</script>";
+        echo "<script>alert('Admin Login Successful'); window.location.href='../admin/dashboard.php';</script>";
         exit();
     }
 
-    // ===== Normal user authentication (existing code) =====
+    // 🔹 Normal user login (from users table)
     $stmt = $conn->prepare("SELECT username, number, clgname, email, password, status FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
