@@ -19,6 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $otpArray = $_POST['otp'] ?? [];
     $otp = implode('', $otpArray); // combine 6 digits
 
+    print_r($otp); exit;
+        
     $sql = "SELECT * FROM users WHERE email=? AND otp=? AND status=0";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $email, $otp);
