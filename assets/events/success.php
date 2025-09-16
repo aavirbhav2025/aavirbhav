@@ -132,7 +132,8 @@ unlink($pdfFileName);
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Receipt</title>
+<title>Aavirbhav - Receipt</title>
+<link rel="icon" type="image/png" href="../images/favicon.png">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
 body { background:#0a0a0a; color:#f8f1e4; font-family:'Cinzel', serif; }
