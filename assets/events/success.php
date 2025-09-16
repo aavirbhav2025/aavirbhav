@@ -96,14 +96,14 @@ file_put_contents($pdfFileName, $pdfOutput);
 $mail = new PHPMailer(true);
 try {
     $mail->isSMTP();
-            $mail->Host       = "smtp.hostinger.com"; // Hostinger SMTP
+            $mail->Host       = "smtp.gmail.com"; // Hostinger SMTP
             $mail->SMTPAuth   = true;
-            $mail->Username   = "contact@aavirbhav.tech"; // your webmail
-            $mail->Password   = "T;h^o!oNb4";             // your webmail password
+            $mail->Username   = "aavirbhav2025@gmail.com"; // your webmail
+            $mail->Password   = "zeza ifuy joqk wlbu";             // your webmail password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
-            $mail->setFrom("contact@aavirbhav.tech", "Aavirbhav Event Registration");
+            $mail->setFrom("aavirbhav2025@gmail.com", "Aavirbhav Event Registration");
     $mail->addAddress($registration['email'], $registration['name']);
 
     $mail->isHTML(true);
