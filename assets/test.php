@@ -2,7 +2,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require __DIR__ . '/vendor/autoload.php'; // adjust if needed
+require __DIR__ . 'assets/vendor/autoload.php'; // adjust path to autoload.php
 
 $mail = new PHPMailer(true);
 
@@ -19,8 +19,8 @@ try {
     $mail->Port       = 587;
 
     // Recipients
-    $mail->setFrom('aavirbhav2025@gmail.com', 'Mailer Test');
-    $mail->addAddress('anotheremail@example.com', 'Test User'); 
+    $mail->setFrom('yourgmail@gmail.com', 'Mailer Test');
+    $mail->addAddress('anotheremail@example.com', 'Test User'); // receiver
 
     // Content
     $mail->isHTML(true);
