@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['email'] = $email;
         $_SESSION['is_admin'] = true;
 
-        echo "<script>alert('Admin Login Successful'); window.location.href='../admin/dashboard.php';</script>";
+        echo "<script>alert('Admin Login Successful'); window.location.href='../admin/admin.php';</script>";
         exit();
     }
 
