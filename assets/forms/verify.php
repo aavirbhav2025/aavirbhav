@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows > 0) {
         // Correct OTP: mark verified
-        $update = $conn->prepare("UPDATE users SET status=1, otp='varified' WHERE email=?");
+        $update = $conn->prepare("UPDATE users SET status=1, otp=NULL WHERE email=?");
         $update->bind_param("s", $email);
         $update->execute();
 
