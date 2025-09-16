@@ -50,8 +50,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
 
     if ($stmt->execute()) {
+    unset($_SESSION['registration']);
     header("Location: success.php");
-    exit(); 
+    exit();
 } else {
     echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;    
 }
