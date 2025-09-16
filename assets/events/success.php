@@ -184,8 +184,9 @@ if(!empty($participants)){
     </div>
 
     <div class="text-center mt-3">
-        <a href="../forms/logout.php" class="btn btn-danger ms-2">Return to Home</a>
-    </div>
+    <a href="receipts/<?= $pdfFileName ?>" target="_blank" class="btn btn-success">Download Receipt</a>
+    <a href="../forms/logout.php" class="btn btn-danger ms-2">Return to Home</a>
+</div>
 </div>
 </body>
 </html>

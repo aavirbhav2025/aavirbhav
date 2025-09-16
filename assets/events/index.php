@@ -30,15 +30,44 @@ $qrImage = isset($qrImages[$amount]) ? $qrImages[$amount] : "qr_default.png";
 $qrSrc = "../images/" . htmlspecialchars($qrImage);
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $utr = $_POST['transaction_id'] ?? '';
+
+    // Handle file upload
+    $uploadDir = "../uploads/"; // make sure this folder exists and is writable
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    $fileName = $_FILES['payment_screenshot']['name'];
+    $fileTmp  = $_FILES['payment_screenshot']['tmp_name'];
+    $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+    // Allow only images
+    $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    if (!in_array($fileExt, $allowedExt)) {
+        die("Invalid file type. Only JPG, PNG, GIF, WEBP allowed.");
+    }
+
+    // Create unique file name
+    $newFileName = uniqid("payment_", true) . "." . $fileExt;
+    $filePath = $uploadDir . $newFileName;
+
+    if (!move_uploaded_file($fileTmp, $filePath)) {
+        die("Failed to upload screenshot. Please try again.");
+    }
+
+    // Save relative path to DB (so you can retrieve later)
+    $screenshotPath = "uploads/" . $newFileName;
+
+    // Insert into DB
     $sql = "INSERT INTO registrations 
-            (name, email, phone, type, events, participants, amount, order_id, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+            (name, email, phone, type, events, participants, amount, order_id, screenshot, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
     }
     $stmt->bind_param(
-        "ssssssds",
+        "ssssssdss",
         $userName,     
         $userEmail,    
         $userContact,  
@@ -46,16 +75,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $events,       
         $participants, 
         $amount,      
-        $utr             
+        $utr,         
+        $screenshotPath  
     );
 
     if ($stmt->execute()) {
-    unset($_SESSION['registration']);
-    header("Location: success.php");
-    exit();
-} else {
-    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;    
-}
+        unset($_SESSION['registration']);
+        header("Location: success.php");
+        exit();
+    } else {
+        echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;    
+    }
     $stmt->close();
     $conn->close();
 }
