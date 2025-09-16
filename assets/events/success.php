@@ -42,7 +42,7 @@ body { font-family: 'Cinzel', serif; background:#0a0a0a; color:#f8f1e4; }
 .invoice-box { background: rgba(20,20,20,0.95); padding:25px; border:3px solid gold; border-radius:15px; max-width:850px; margin:auto; }
 h2 { font-weight:bold; color:gold; text-shadow:0 0 5px #000; }
 ul { list-style:none; padding:0; }
-ul li::before { content:"⚔️ "; }
+ul li::before { content:": "; }
 </style>
 </head>
 <body>

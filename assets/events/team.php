@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <form id="eventForm" method="POST" class="space-y-6">
         <div class="bg-white/10 p-6 rounded-lg">
             <label class="block text-lg font-medium mb-3">Registration Type</label>
-            <select id="regType" name="type" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white">
+            <select id="regType" name="type" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-black">
                 <option value="individual">Individual (Open Events)</option>
                 <option value="team">Team (IT Events)</option>
             </select>
