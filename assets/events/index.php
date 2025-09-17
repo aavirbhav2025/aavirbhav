@@ -18,6 +18,7 @@ $participants = json_encode($registration['participants']);
 $amount      = $_SESSION['registration']['amount'] ?? 0;
 
 $qrImages = [
+    200  => "200.jpg",
     800  => "800.jpg",
     1000  => "1000.jpg",
     1600 => "1600.jpg",
