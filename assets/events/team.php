@@ -1,30 +1,35 @@
 <?php
 session_start();
 
-// Redirect to login if not logged in 
-if (!isset($_SESSION['username'])) { 
-header("Location: ../forms/form.html"); 
-exit(); }
+
+$username = $_SESSION['username'];
 
 // Pricing rules
 $eventPrices = [
     "Tug of War" => 800,
     "Corporate Walk" => 1000,
-    "Web Design" => 100,
-    "It Manager" => 100,
-    "IT Quiz" => 100,
-    "Treasure Hunt" => 100,
-    "Coding" => 100,
-    "Photography" => 100,
-    "Videography" => 100,
-    "Gaming" => 100
+    "Web Design" => 200,
+    "It Manager" => 200,
+    "IT Quiz" => 200,
+    "Treasure Hunt" => 200,
+    "Coding" => 200,
+    "Photography" => 200,
+    "Videography" => 200,
+    "Gaming" => 200
 ];
-$defaultPrice = 100;
+$defaultPrice = 200;
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $type = $_POST['type'] ?? 'individual';
-    $events = $_POST['events'] ?? [];
+
+    if ($type === "individual") {
+        $selectedEvent = $_POST['events'] ?? null;
+        $events = $selectedEvent ? [$selectedEvent] : [];
+    } else {
+        $events = $_POST['events'] ?? [];
+    }
+
     $participants = $_POST['participants'] ?? [];
 
     // Save form data
@@ -59,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Team Registration - Aavirbhav Events</title>
+    <title>Registration - Aavirbhav Events</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../images/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -86,6 +91,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body class="text-white">
 
+<!-- ✅ Navbar -->
+<nav class="bg-black/70 p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">Aavirbhav</h1>
+    <div class="flex items-center space-x-4">
+        <span>Hello, <?= htmlspecialchars($username) ?></span>
+        <a href="../forms/logout.php" 
+           class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold">
+            Logout
+        </a>
+    </div>
+</nav>
+
 <div class="max-w-4xl mx-auto px-4 py-8">
     <h2 class="text-3xl font-bold mb-6">Register</h2>
 
@@ -100,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <p class="text-yellow-300 mb-4 text-sm">
             <strong>Team</strong>: Flat rate ₹1600 (choose IT events only).  
-            <strong>Individual</strong>: Only Tug of War or Corporate Walk.
+            <strong>Individual</strong>: Only one event (Tug of War, Corporate Walk, Videography, Photography, Treasure Hunt, Gaming, IT Manager).
         </p>
 
         <!-- IT Events -->
@@ -122,10 +139,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!-- Open Events -->
         <div id="openEventsWrapper" class="bg-white/10 p-6 rounded-lg">
             <label class="block text-lg font-medium mb-4">Open Events (Individual only)</label>
-            <select id="openEvents" name="events[]" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white">
+            <select id="openEvents" name="events" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white">
                 <option value="">-- Select --</option>
                 <option value="Tug of War" data-price="800">Tug of War (₹800)</option>
                 <option value="Corporate Walk" data-price="1000">Corporate Walk (₹1000)</option>
+                <option value="Videography" data-price="200">Videography (₹200)</option>
+                <option value="Photography" data-price="200">Photography (₹200)</option>
+                <option value="Treasure Hunt" data-price="200">Treasure Hunt (₹200)</option>
+                <option value="Gaming" data-price="200">Gaming (₹200)</option>
+                <option value="It Manager" data-price="200">IT Manager (₹200)</option>
             </select>
         </div>
 
@@ -135,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h3 class="text-2xl font-bold">Total Price: ₹<span id="totalPrice">0</span></h3>
         </div>
 
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg">
+        <button id="submitBtn" type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>
             Proceed to Payment
         </button>
     </form>
@@ -149,6 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalPriceEl = document.getElementById("totalPrice");
     const participantFields = document.getElementById("participantFields");
     const openEventsSelect = document.getElementById("openEvents");
+    const submitBtn = document.getElementById("submitBtn");
 
     function updateForm() {
         let type = regType.value;
@@ -159,6 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
             itEventsWrapper.style.display = "block";
             openEventsWrapper.style.display = "none";
             total = 1600;
+            submitBtn.disabled = false;
             document.querySelectorAll(".it-event:checked").forEach(cb => {
                 participantFields.innerHTML += participantBlock(cb.value, 2, "Team (2 members)");
             });
@@ -169,6 +193,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 let opt = openEventsSelect.selectedOptions[0];
                 total = parseInt(opt.dataset.price);
                 participantFields.innerHTML += participantBlock(opt.value, 2, "Individual (2 members)");
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
             }
         }
         totalPriceEl.textContent = total;
